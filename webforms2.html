@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="generator" content="gvim" />
+<meta name="author" content="闲耘™ (hotoo.cn[AT]gmail.com)" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" media="all" />
+<script type="text/javascript" src="webforms2.js"></script>
+<title>Webforms2</title>
+</head>
+<body>
+  <form action="webforms2.html" method="get" accept-charset="utf-8" id="f">
+
+    required: <input type="text" name="required" value="" required error-message="必填项" /><br/>
+    date start: <input type="date" name="datestart" id="datestart" value="" required data-format="YYYY/MM/DD" error-message="请输入合法的日期" /><br/>
+    date end: <input type="date" name="dateend" value="" data-format="YYYYMMDD" required error-message="请输入合法的日期" /><br/>
+    date start: <input type="date" name="datestart" id="datestart" value="" pattern="^\d{4}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|3[01])$" error-message="请输入合法的日期" /><br/>
+    date end: <input type="date" name="dateend" value="" pattern="^\d{4}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|3[01])$" error-message="请输入合法的日期" /><br/>
+    number: <input type="number" name="number" value="" error-message="请输入合法的数值" /><br/>
+    url: <input type="url" name="url" value="" error-message="请输入正确的 URL 地址" /><br/>
+    email: <input type="email" name="email" value="" error-message="请输入正确的 Email 地址。" /><br/>
+    alipay email: <input type="email" pattern="@alipay\.com$" error-message="请使用支付宝邮箱" name="" value="" /><br/>
+    alipay emails: <textarea name="emails" rows="8" cols="40" required pattern="^\s*\w+(?:\.\w+)*@alipay\.com(\s*;\s*\w+(?:\.\w+)*@alipay\.com)*\s*$" error-message="请使用支付宝邮箱，以英文逗号分隔。"></textarea><br/>
+
+  <p><input type="submit" value="Continue &rarr;"></p>
+  </form>
+
+
+<script type="text/javascript">/*<![CDATA[*/
+  new WebForms2(document.getElementById("f"),{
+    "handler": {
+      "datestart": function(elem){
+        var now = new Date(),
+          format = elem.getAttribute("data-format")||"YYYY/MM/DD",
+          val = Date.parse(elem.value, format);
+
+        if(!val){return false;}
+        return now.getFullYear() < val.getFullYear() ||
+          now.getMonth() < val.getMonth() ||
+          now.getDate() < val.getDate();
+      },
+      "dateend": function(elem){
+        var datestart = document.getElementById("datestart"),
+          start_format = datestart.getAttribute("data-format")||"YYYY/MM/DD",
+          start = Date.parse(datestart.value, start_format),
+          end_format = elem.getAttribute("data-format") || "YYYY/MM/DD",
+          end = Date.parse(elem.value, end_format);
+        if(!start){return false;}
+        if(!end){return false;}
+        return start.getFullYear() < end.getFullYear() &&
+          start.getMonth() < end.getMonth() &&
+          start.getDate() < end.getDate();
+      }
+    },
+    "callback": function(elem){
+      alert(elem.getAttribute("error-message"));
+    }
+  });
+/*]]>*/</script>
+</body>
+</html>

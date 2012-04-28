@@ -1,0 +1,11 @@
+
+# WebForms2
+
+语义化 Web 表单，提供灵活高效的表单验证方案。
+
+后续考虑提供自动化富媒体表单控件自动初始化。
+
+## See Also
+* [http://www.whatwg.org/specs/web-forms/current-work/ webforms2]
+* [https://github.com/westonruter/webforms2 webforms2@github]
+    * [http://code.google.com/p/webforms2/ webforms2@google.code]
