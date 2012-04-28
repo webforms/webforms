@@ -1,7 +1,9 @@
 /**
  * Web Forms 2 Validate.
+ * TODO: sync validate.
  * @param {HTMLFormElement} form.
  * @param {Object} options.
+ * @see http://dev.w3.org/html5/markup/input.html
  *
  * Example:
  *
@@ -56,19 +58,14 @@ var WebForms2 = function(form, options){
             }else if(type === "text"){
                 type = e.getAttribute("type");
             }
-            // TODO:
-            //case "radio":
-            //case "checkbox":
-            //case "select-one":
-            //case "select-multiple":
             if(hasAttribute(e, "required")){
                 certified = verifyRequired(e);
             }
+            // XXX: think deep here.
             if(e.value == ""){
                 if(!certified){
                     certifiedAll = false;
                     if(!callback.call(e, e)){
-                        try{e.focus();}catch(ex){}
                         return false;
                     }
                 }
@@ -76,19 +73,33 @@ var WebForms2 = function(form, options){
             }
             switch(type.toLowerCase()){
                 case "submit":
+                case "button":
                 case "reset":
                 case "image":
+                case "file":
+                case "radio":
+                case "checkbox":
+                case "select-one":
+                case "select-multiple":
+                    break;
                 case "text":
                 case "password":
                 case "hidden":
+                case "search":
                 case "textarea":
-                case "select-one":
-                case "select-multiple":
-                case "radio":
-                case "checkbox":
+                    certified = verifyText(e);
                     break;
                 case "number":
                     certified = verifyNumber(e);
+                    break;
+                case "month":
+                    certified = verifyMonth(e);
+                    break;
+                case "time":
+                    certified = verifyTime(e);
+                    break;
+                case "week":
+                    certified = verifyWeek(e);
                     break;
                 case "date":
                     certified = verifyDate(e);
@@ -96,11 +107,20 @@ var WebForms2 = function(form, options){
                 case "datetime":
                     certified = verifyDatetime(e);
                     break;
+                case "datetime-local":
+                    certified = verifyDatetimeLocal(e);
+                    break;
                 case "url":
                     certified = verifyUrl(e);
                     break;
                 case "email":
                     certified = verifyEmail(e);
+                    break;
+                case "tel":
+                    certified = verifyTel(e);
+                    break;
+                case "color":
+                    certified = verifyColor(e);
                     break;
                 case "range":
                     certified = verifyRange(e);
@@ -130,40 +150,124 @@ var WebForms2 = function(form, options){
         return certifiedAll;
     }
     // 验证必填项。
+    // TODO:
+    //  case "radio":
+    //  case "checkbox":
+    //  case "select-one":
+    //  case "select-multiple":
     function verifyRequired(elem){
         return !/^\s*$/.test(elem.value);
+    }
+    function verifyText(elem){
+        var val = elem.value, minlength, maxlength;
+        if(hasAttribute(elem, "minlength"){
+            minlength = elem.getAttribute("minlength");
+            if(/^\d+$/.test(minlength) && (val.length < parseInt(minlength))){
+                return false;
+            }
+        }
+        if(hasAttribute(elem, "maxlength"){
+            maxlength = elem.getAttribute("maxlength");
+            if(/^\d+$/.test(maxlength) && (val.length > parseInt(maxlength))){
+                return false
+            }
+        }
+        return true;
+    }
+    /**
+     * @param {String} num.
+     * @return {Boolean}
+     */
+    function isNumber(num){
+        if("number" == typeof num){return true;}
+        if("string" != typeof num){return false;}
+        if(/^[+-]?\d+$/.test(num) || /^[+-]?(?:\d+)?\.\d+$/){
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param {String} num.
+     * @return {Boolean}
+     */
+    function isPositiveNumber(num){
+        if("number" == typeof num){return true;}
+        if("string" != typeof num){return false;}
+        if(/^\d+$/.test(num) || /^(?:\d+)?\.\d+$/){
+            return true;
+        }
+        return false;
     }
     // 验证数值类型项。
     function verifyNumber(elem){
         var val = elem.value, min, max;
-        if(!/^(?:\+\-)\d+(?:\.\d+)$/.test(val)){
-            return false;
-        }
+        if(!isNumber(val)){return false;}
+
         val = parseFloat(val, 10);
         if(hasAttribute(elem, "min")){
-            min = parseFloat(elem.getAttribute("min"), 10);
-            if(val < min){return false;}
+            min = elem.getAttribute("min");
+            // XXX: if min not a positive number, return false?
+            if(isPositiveNumber(min) && val < parseFloat(min, 10)){return false;}
         }
         if(hasAttribute(elem, "max")){
-            max = parseFloat(elem.getAttribute("max"), 10);
-            if(val > max){return false;}
+            max = elem.getAttribute("max");
+            // XXX: if min not a positive number, return false?
+            if(isPositiveNumber(max) && val > parseFloat(max, 10)){return false;}
         }
         return true;
     }
+    // TODO: verifyMonth.
+    function verifyMonth(elem){}
     // 验证日期项。
-    // min, max
+    // @see http://dev.w3.org/html5/markup/input.date.html
+    // @see http://tools.ietf.org/html/rfc3339
     function verifyDate(elem){
         var val = elem.value,
-            format = elem.getAttribute("data-format") || "YYYY/MM/DD";
+            format = elem.getAttribute("data-format") || "YYYY/MM/DD",
+            min, max;
 
-        if(format.length != val.length){return false;}
+        val = Date.parse(val, format);
+        if(!(val instanceof Date)){return false;}
 
-        return Date.parse(val, format) instanceof Date;
+        if(hasAttribute(elem, "min")){
+            min = Date.parse(elem.getAttribute("min"), format);
+            // XXX: if min not a date, return false?
+            if((min instanceof Date) && (min > val)){return false;}
+        }
+        if(hasAttribute(elem, "max")){
+            max = Date.parse(elem.getAttribute("max"), format);
+            // XXX: if min not a date, return false?
+            if((max instanceof Date) && (max < val)){return false;}
+        }
+        return true;
     }
+    // TODO: verifyTime.
+    function verifyTime(elem){}
+    // TODO: verifyWeek.
+    function verifyWeek(elem){}
+    // TODO: verifyDatetimeLocal.
+    function verifyDatetimeLocal(elem){}
+    // TODO: verifyTel.
+    function verifyTel(elem){}
     // 验证日期时间类型项。
-    // TODO.
-    // min, max
     function verifyDatetime(elem){
+        var val = elem.value,
+            format = elem.getAttribute("data-format") || "YYYY/MM/DD hh:mm:ss",
+            min, max;
+
+        val = Date.parse(val, format);
+        if(!(val instanceof Date)){return false;}
+
+        if(hasAttribute(elem, "min")){
+            min = Date.parse(elem.getAttribute("min"), format);
+            // XXX: if min not a date, return false?
+            if((min instanceof Date) && (min > val)){return false;}
+        }
+        if(hasAttribute(elem, "max")){
+            max = Date.parse(elem.getAttribute("max"), format);
+            // XXX: if min not a date, return false?
+            if((max instanceof Date) && (max < val)){return false;}
+        }
         return true;
     }
     // 验证 URL 格式项。
@@ -173,7 +277,11 @@ var WebForms2 = function(form, options){
     function verifyEmail(elem){
         return /^\w+([\._\-]\w+)*@\w+(?:\.\w+)+$/.test(elem.value);
     }
-    // TODO.
+    // TODO: verifyRange.
+    function verifyRange(elem){
+        return true;
+    }
+    // TODO: verifyColor.
     function verifyRange(elem){
         return true;
     }
@@ -191,7 +299,8 @@ var WebForms2 = function(form, options){
  * XXX: %M, %D 等不确定位数的，很难进行。
  */
 Date.parse = function(date, format){
-    if(!date || !format){return null;}
+    if(!date || !format || format.length != val.length){return null;}
+
     format = RegExp.safeSource(format);
     format = format.replace("YYYY", "(?<fullyear>\\d{4})");
     format = format.replace("YY", "(?<year>\\d{2})");
