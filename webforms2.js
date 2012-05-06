@@ -4,16 +4,20 @@
  * @param {Object} options.
  * @see http://dev.w3.org/html5/markup/input.html
  *
+ * TODO: options: trigger
+ * TODO: success feedback.
+ *
  * Example:
  *
  * new WebForms2(
  *     document.getElementById("formId"), {
  *     //trigger: "keyup,blur,submit",
  *     rules: {
+ *         // [name]
  *         "username": function(elem){},
  *         "password": function(elem){}
  *     },
- *     callback: function(elem){}
+ *     feedback: function(elem){}
  *     }
  * );
  */
@@ -22,8 +26,8 @@ var WebForms2 = function(form, options){
     if(!options.hasOwnProperty("rules")){
         options.rules = {};
     }
-    if(!options.hasOwnProperty("callback")){
-        options.callback = function(){};
+    if(!options.hasOwnProperty("feedback")){
+        options.feedback = function(){};
     }
 
     var _submit = form.onsubmit;
@@ -35,7 +39,7 @@ var WebForms2 = function(form, options){
         (function(elem){
             addEventListener(elem, "blur", function(){
                 if(!verifyFormElement(elem) &&
-                  !options.callback.call(elem, elem)){
+                  !options.feedback.call(elem, elem)){
                     return false;
                 }
             });
@@ -109,7 +113,7 @@ var WebForms2 = function(form, options){
     // @param {Object} options.
     function verifyForm(form, options){
         var rules = options.rules,
-            callback = options.callback,
+            feedback = options.feedback,
             certified = true,
             certifiedAll = true,
             groupElemCatch = {};
@@ -118,7 +122,7 @@ var WebForms2 = function(form, options){
             e = form.elements[i];
             certified = certified && verifyFormElement(e);
 
-            if(!certified && !callback.call(e, e)){
+            if(!certified && !feedback.call(e, e)){
                 return false;
             }
         }
@@ -216,9 +220,6 @@ var WebForms2 = function(form, options){
             certified = certified && "valid"==e.getAttribute("verified");
         }
         return certified;
-    }
-    function verifyAsync(elem){
-
     }
     // 验证必填项。
     function verifyRequired(elem, type, val){
@@ -448,6 +449,11 @@ var WebForms2 = function(form, options){
             return elem.hasAttribute(attr);
         }
         return null !== elem.getAttribute(attr);
+    }
+    function each(list, handler){
+        for(var i=0,l=list.length; i<l; i++){
+            handler.call(list[i], list[i], i);
+        }
     }
 };
 
