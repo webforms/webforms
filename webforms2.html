@@ -9,10 +9,89 @@
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" media="all" />
-<script type="text/javascript" src="webforms2.js"></script>
+<style type="text/css" media="screen">
+  .help-inline b{color:#f00; font-weight:bold; padding:2px 5px;}
+</style>
+<script type="text/javascript" src="utils.js" charset="utf-8"></script>
+<script type="text/javascript" src="webforms2.js" charset="utf-8"></script>
 <title>Webforms2</title>
 </head>
 <body>
+<form class="form-horizontal" id="form-required">
+  <fieldset>
+    <legend>required</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Text</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Password</label>
+      <div class="controls">
+        <input type="password" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Single Checkbox</label>
+      <div class="controls">
+        <input type="checkbox" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Group Checkbox</label>
+      <div class="controls">
+        <label class="checkbox" for="checkbox01">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox01" />
+        checkbox01</label>
+        <label class="checkbox" for="checkbox02">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox02" />
+        checkbox02</label>
+        <label class="checkbox" for="checkbox03">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox03" />
+        checkbox03</label>
+        <p class="help-inline"><b>*</b>required. must check more than one checkbox, but less than three.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Single Radio</label>
+      <div class="controls">
+        <input type="radio" name="radio-group-single" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Group Checkbox</label>
+      <div class="controls">
+        <label class="radio" for="radio01">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio01" />
+        checkbox01</label>
+        <label class="radio" for="radio02">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio02" required />
+        checkbox02</label>
+        <label class="radio" for="radio03">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio03" />
+        checkbox03</label>
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Email</label>
+      <div class="controls">
+        <input type="email" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
   <form action="webforms2.html" method="get" accept-charset="utf-8" id="f">
 
     required: <input type="text" name="required" value="" required error-message="必填项" /><br/>
@@ -31,8 +110,27 @@
 
 
 <script type="text/javascript">/*<![CDATA[*/
+  function $(id){return document.getElementById(id);}
+  new WebForms2($("form-required"), {
+    rules: {
+      "checkbox-group-required": function(elem){
+        var form = elem.form,
+          name = elem.name;
+        if(!form){return;}
+        var items = form[name], count=0;
+        for(var i=0,l=items.length; i<l; i++){
+          if(items[i].checked){count++;}
+        }
+        if(count<1 || count>2){return false;}
+        return true;
+      }
+    },
+    feedback: function(elem){
+    }
+  });
+
   new WebForms2(document.getElementById("f"),{
-    "handler": {
+    rules: {
       "datestart": function(elem){
         var now = new Date(),
           format = elem.getAttribute("data-format")||"YYYY/MM/DD",
@@ -56,7 +154,7 @@
           start.getDate() < end.getDate();
       }
     },
-    "callback": function(elem){
+    feedback: function(elem){
       alert(elem.getAttribute("error-message"));
     }
   });

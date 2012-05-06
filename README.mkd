@@ -5,6 +5,11 @@
 
 后续考虑提供自动化富媒体表单控件自动初始化。
 
+## 设计思想
+* 表单语义化。
+* 关注逻辑。
+* 交出表单交互反馈控制权。
+
 ## See Also
 * [http://www.whatwg.org/specs/web-forms/current-work/ webforms2]
 * [https://github.com/westonruter/webforms2 webforms2@github]

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="generator" content="gvim" />
+<meta name="author" content="闲耘™ (hotoo.cn[AT]gmail.com)" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="bootstrap.css" media="all" />
+<style type="text/css" media="screen">
+  .help-inline b{color:#f00; font-weight:bold; padding:2px 5px;}
+</style>
+<script type="text/javascript" src="utils.js" charset="utf-8"></script>
+<script type="text/javascript" src="webforms2.js" charset="utf-8"></script>
+<title>Webforms2 required test</title>
+</head>
+<body>
+
+<form class="well form-inline" id="form-text-required">
+  <label>Text:</label>
+  <input type="text" placeholder="text" required error-message="Required text." />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+<script type="text/javascript">/*<![CDATA[*/
+  function get_nextsibling(n){
+    var x=n.nextSibling;
+    while(x.nodeType!=1 && x.nextSibling){
+      x=x.nextSibling;
+    }
+    return x;
+  }
+
+  function $(id){return document.getElementById(id);}
+  new WebForms2($("form-text-required"), {
+    feedback: function(elem){
+      var msg = elem.getAttribute("error-message"),
+        err = get_nextsibling(elem);
+      if(err && msg){
+        err.innerHTML = msg;
+      }
+      //! Donot focus.
+      //elem.focus();
+    }
+  });
+/*]]>*/</script>
+
+<form class="well form-inline" id="form-password-required">
+  <label>Password:</label>
+  <input type="password" placeholder="Password" required error-message="Required password." />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+<script type="text/javascript">/*<![CDATA[*/
+  new WebForms2($("form-password-required"), {
+    feedback: function(elem){
+      var msg = elem.getAttribute("error-message"),
+        err = get_nextsibling(elem);
+      if(err && msg){
+        err.innerHTML = msg;
+      }
+      //! Donot focus.
+      //elem.focus();
+    }
+  });
+/*]]>*/</script>
+
+<form class="well form-inline">
+  <label class="checkbox">
+    <input type="checkbox" required /> Required single checkbox.
+  </label>
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label class="checkbox" for="checkbox01">
+    <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox01" required />
+    Checkbox 1</label>
+  <label class="checkbox" for="checkbox02">
+    <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox02" required />
+    Checkbox 2</label>
+  <label class="checkbox" for="checkbox03">
+    <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox03" required />
+    Checkbox 3</label>
+  <p class="help-inline"><b>*</b>required. must check more than one checkbox, but less than three.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label class="checkbox">
+    <input type="radio" required /> Required single radio button.
+  </label>
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline" id="form-radio-group-required">
+  <label class="checkbox">
+    <input name="radio-group-required" type="radio" required /> Radio 1.
+  </label>
+  <label class="checkbox">
+    <input name="radio-group-required" type="radio" required /> Radio 2.
+  </label>
+  <label class="checkbox">
+    <input name="radio-group-required" type="radio" required /> Radio 3.
+  </label>
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+<script type="text/javascript">/*<![CDATA[*/
+  new WebForms2($("form-radio-group-required"), {
+    feedback: function(elem){
+      var msg = elem.getAttribute("error-message"),
+        err = get_nextsibling(elem);
+      if(msg && err){err.innerHTML = msg;}
+    }
+  });
+/*]]>*/</script>
+
+<form class="well form-inline" id="form-email-required">
+  <label>Email:</label>
+  <input type="email" placeholder="Email" required error-message="Email required." />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+<script type="text/javascript">/*<![CDATA[*/
+  new WebForms2($("form-email-required"), {
+    feedback: function(elem){
+      var msg = elem.getAttribute("error-message"),
+        err = get_nextsibling(elem);
+      if(msg && err){err.innerHTML = msg;}
+    }
+  });
+/*]]>*/</script>
+
+<form class="well form-inline">
+  <label>Url:</label>
+  <input type="url" placeholder="Url" required />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label>Tel:</label>
+  <input type="tel" placeholder="Tel" required />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label>Date:</label>
+  <input type="date" placeholder="Date" required />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label>Date Time:</label>
+  <input type="datetime" placeholder="Date Time" required />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="well form-inline">
+  <label>Date Time Local:</label>
+  <input type="datetime-local" placeholder="Date Time Local" required />
+  <p class="help-inline"><b>*</b>required.</p>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<form class="form-horizontal" id="form-required">
+  <fieldset>
+    <legend>required text</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Text</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
+<form class="form-horizontal" id="form-password-required">
+  <fieldset>
+    <legend>required password</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Password</label>
+      <div class="controls">
+        <input type="password" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
+<form class="form-horizontal" id="form-required">
+  <fieldset>
+    <legend>required password</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Single Checkbox</label>
+      <div class="controls">
+        <input type="checkbox" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
+<form class="form-horizontal" id="form-password-required">
+  <fieldset>
+    <legend>required password</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Group Checkbox</label>
+      <div class="controls">
+        <label class="checkbox" for="checkbox01">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox01" />
+        checkbox01</label>
+        <label class="checkbox" for="checkbox02">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox02" />
+        checkbox02</label>
+        <label class="checkbox" for="checkbox03">
+          <input type="checkbox" name="checkbox-group-required" class="input-xlarge" id="checkbox03" />
+        checkbox03</label>
+        <p class="help-inline"><b>*</b>required. must check more than one checkbox, but less than three.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
+<form class="form-horizontal" id="form-password-required">
+  <fieldset>
+    <legend>required password</legend>
+    <div class="control-group">
+      <label class="control-label" for="input01">Single Radio</label>
+      <div class="controls">
+        <input type="radio" name="radio-group-single" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Group Checkbox</label>
+      <div class="controls">
+        <label class="radio" for="radio01">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio01" />
+        checkbox01</label>
+        <label class="radio" for="radio02">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio02" required />
+        checkbox02</label>
+        <label class="radio" for="radio03">
+          <input type="radio" name="radio-group-required" class="input-xlarge" id="radio03" />
+        checkbox03</label>
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="input01">Email</label>
+      <div class="controls">
+        <input type="email" class="input-xlarge" id="input01" required />
+        <p class="help-inline"><b>*</b>required.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <button class="btn" type="reset">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
+</body>
+</html>
