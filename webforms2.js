@@ -5,7 +5,6 @@
  * @see http://dev.w3.org/html5/markup/input.html
  * @author 闲耘™(hotoo.cn[AT]gmail.com)
  *
- * TODO: options: trigger
  * TODO: success feedback.
  * XXX: hasAttribute in element verify function.
  *
@@ -13,7 +12,7 @@
  *
  * new WebForms2(
  *     document.getElementById("formId"), {
- *     //trigger: "keyup,blur,submit", // default & required trigger: submit.
+ *     trigger: "blur,submit", // default & required trigger: submit.
  *     rules: {
  *         // [name]
  *         "username": function(elem){},
@@ -58,16 +57,6 @@ var WebForms2 = function(form, options){
         })(form.elements[i]);
     }
 
-    //var trigger;
-    //if(options.hasOwnProperty("trigger") && "string"==typeof options.trigger){
-        //trigger = options.trigger.split(",");
-        //for(var i=0,l=trigger.length; i<l; i++){
-            //if("submit"==trigger[i]){continue;}
-            //for(var j=0,m=form.elements.length; j<m; j++){
-                //addEventListener(form.elements[j], trigger[i], verify);
-            //}
-        //}
-    //}
     /**
      * Get HTMLElement's type
      * @param {HTMLElement} elem.
