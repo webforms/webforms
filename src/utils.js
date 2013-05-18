@@ -1,4 +1,5 @@
 
+define(function(require, exports, module){
 /**
  * string ends with suffix string.
  * @param {String} string, target string.
@@ -129,3 +130,11 @@ RegExp.safeSource = function(src){
     }
     return src;
 };
+
+  exports.endsWith = endsWith;
+  exports.isNumber = isNumber;
+  exports.isPositiveNumber = isPositiveNumber;
+  exports.addEventListener = addEventListener;
+  exports.hasAttribute = hasAttribute;
+  exports.each = each;
+});
