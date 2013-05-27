@@ -24,11 +24,6 @@
 * calendar
 * range
 
-## See Also
-
-* [webforms2](http://www.whatwg.org/specs/web-forms/current-work/)
-* [webforms2@github](https://github.com/westonruter/webforms2)
-    * [webforms2@google.code](http://code.google.com/p/webforms2/)
 
 ---
 

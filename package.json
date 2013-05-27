@@ -13,7 +13,10 @@
   "licenses": "MIT",
   "spm": {
     "output": ["webforms2.js"],
-    "alias": {},
+    "alias": {
+      "$": "$",
+      "events": "arale/events/1.1.0/events"
+    },
     "devAlias": {},
     "engines": {}
   }
