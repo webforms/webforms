@@ -1,68 +1,86 @@
 
-define(function(require, exports, module){
-/**
- * string ends with suffix string.
- * @param {String} string, target string.
- * @param {String} suffix.
- */
-function endsWith(string, suffix) {
+define(function(require, exports){
+
+  // 判断字符串 string 是否以 suffix 结尾。
+  //
+  // @param {String} string, target string.
+  // @param {String} suffix.
+  // @return {Boolean}
+  function endsWith(string, suffix) {
     return string.indexOf(suffix)===string.length-suffix.length;
-}
-/**
- * @param {String} num.
- * @return {Boolean}
- */
-function isNumber(num){
-    if("number" == typeof num){return true;}
-    if("string" != typeof num){return false;}
+  }
+
+  // 判断字符串 num 是否符合数值格式。
+  //
+  // @param {String} num.
+  // @return {Boolean}
+  function isNumber(num){
+    if("number" === typeof num){return true;}
+    if("string" !== typeof num){return false;}
     if(/^[+-]?\d+$/.test(num) || /^[+-]?(?:\d+)?\.\d+$/){
-        return true;
+      return true;
     }
     return false;
-}
-/**
- * @param {String} num.
- * @return {Boolean}
- */
-function isPositiveNumber(num){
-    if("number" == typeof num){return true;}
-    if("string" != typeof num){return false;}
+  }
+
+  // 判断字符串 num 是否符合正整数格式。
+  //
+  // @param {String} num.
+  // @return {Boolean}
+  function isPositiveNumber(num){
+    if("number" === typeof num){return true;}
+    if("string" !== typeof num){return false;}
     if(/^\d+$/.test(num) || /^(?:\d+)?\.\d+$/){
-        return true;
+      return true;
     }
     return false;
-}
-function addEventListener(elem, event, handler){
+  }
+
+  // 给指定的 elem 元素绑定事件。
+  //
+  // @param {HTMLElement} elem 指定的元素。
+  // @param {String} event 事件名称。
+  // @param {Function} handler 事件处理函数。
+  function addEventListener(elem, event, handler){
     if(document.addEventListener){
-        elem.addEventListener(event, handler, false);
+      elem.addEventListener(event, handler, false);
     }else if(document.attachEvent){
-        elem.attachEvent("on"+event, handler);
+      elem.attachEvent("on"+event, handler);
     }
-}
+  }
 
-
-function hasAttribute(elem, attr){
-    if("function" == typeof elem.hasAttribute){
-        return elem.hasAttribute(attr);
+  // 判断指定元素是否存在特定属性。
+  //
+  // @param {HTMLElement} elem, 特定元素。
+  // @param {String} attr, 指定属性名。
+  // @return {Boolean}
+  function hasAttribute(elem, attr){
+    if("function" === typeof elem.hasAttribute){
+      return elem.hasAttribute(attr);
     }
     return null !== elem.getAttribute(attr);
-}
-function each(list, handler){
+  }
+
+  // 遍历列表，对每一项进行处理。
+  //
+  // @param {Array} list, 指定的列表。
+  // @param {Function} handler, 处理函数。
+  function each(list, handler){
     for(var i=0,l=list.length; i<l; i++){
-        handler.call(list[i], list[i], i);
+      handler.call(list[i], list[i], i);
     }
-}
+  }
 
-/**
- * @param {String} date, date string.
- * @param {format} format, date format. like "YYYY/MM/DD".
- * @return {Date}
- * XXX: %M, %D 等不确定位数的，很难进行。
- */
-Date.parse = function(date, format){
-    if(!date || !format || format.length != val.length){return null;}
+  // 将日期字符串转换成日期对象。
+  // XXX: %M, %D 等不确定位数的，很难进行。
+  //
+  // @param {String} date, date string.
+  // @param {format} format, date format. like "YYYY/MM/DD".
+  // @return {Date}
+  function date_parse(date, format){
+    if(!date || !format || format.length !== date.length){return null;}
 
-    format = RegExp.safeSource(format);
+    format = regexp_escape(format);
     format = format.replace("YYYY", "(?<fullyear>\\d{4})");
     format = format.replace("YY", "(?<year>\\d{2})");
     format = format.replace("yyyy", "(?<fullyear>\\d{4})");
@@ -84,7 +102,7 @@ Date.parse = function(date, format){
     format = format.replace("ss", "(?<second>\\d{2})");
     //format = format.replace("%s", "(?<second>\\d)");
 
-    var m = RegExp.namedGroupMatch("^"+format+"$", date);
+    var m = regexp_namedGroupMatch("^"+format+"$", date);
     if(!m){return null}
 
     var d = new Date();
@@ -96,40 +114,39 @@ Date.parse = function(date, format){
     if(m.minute){d.setMinutes(parseInt(m.minute, 10));}
     if(m.second){d.setSeconds(parseInt(m.second, 10));}
     return d;
-}
-/**
- * @see http://www.regexlab.com/zh/deelx/syntax/bas_name.htm
- *      http://www.cn-cuckoo.com/2007/07/25/group-back-reference-and-numberednamed-group-39.html
- *      http://www.cnblogs.com/QLeelulu/archive/2011/03/16/1986158.html
- * @param {String} regex, with named group reguler expression string.
- * @param {String} string, target string to match.
- * @param {String} flag, "i": ignore case, "g": global, "m": multiline.
- * @return {Object}
- */
-RegExp.namedGroupMatch = function(regex, string, flag){
+  }
+
+  // @see http://www.regexlab.com/zh/deelx/syntax/bas_name.htm
+  //      http://www.cn-cuckoo.com/2007/07/25/group-back-reference-and-numberednamed-group-39.html
+  //      http://www.cnblogs.com/QLeelulu/archive/2011/03/16/1986158.html
+  //
+  // @param {String} regex, with named group reguler expression string.
+  // @param {String} string, target string to match.
+  // @param {String} flag, "i": ignore case, "g": global, "m": multiline.
+  // @return {Object}
+  function regexp_namedGroupMatch(regex, string, flag){
     var names=[string], result={0:string};
     var re = regex.replace(/\(\?<([a-zA-Z]+)>([^)]+)\)/g, function($0, $1, $2){
-        names.push($1);
-        return '('+$2+')';
+      names.push($1);
+      return "("+$2+")";
     });
     re = new RegExp(re, flag);
     var m = re.exec(string);
     if(!m){return null;}
 
     for(var i=1,l=m.length; i<l; i++){
-        result[names[i]] = result[i] = m[i];
+      result[names[i]] = result[i] = m[i];
     }
     return result;
-};
-RegExp.safeSource = function(src){
-    var a = "! \\ / . $ * ^ ( ) [ ] { } ? + - |".split(" ");
-    for (var i=0, l=a.length; i<l; i++){
-        try{
-        src = src.replace(new RegExp("\\"+a[i], "g"), "\\"+a[i]);
-        }catch(ex){alert(ex.message)}
-    }
-    return src;
-};
+  }
+
+  // 转义正则表达式，将特殊的正则表达式元字符转义成普通字符。
+  //
+  // @param {String} source, 正则表达式源字符串。
+  // @return {String} 可以安全的作为正则表达式的字符串。
+  function regexp_escape(source){
+    return String(source).replace(/([\!\\\/\.\$\*\^\(\)\[\]\{\}\?\+\-\|])/g, "\\$1");
+  }
 
   exports.endsWith = endsWith;
   exports.isNumber = isNumber;
@@ -137,4 +154,5 @@ RegExp.safeSource = function(src){
   exports.addEventListener = addEventListener;
   exports.hasAttribute = hasAttribute;
   exports.each = each;
+  exports.date_parse = date_parse;
 });

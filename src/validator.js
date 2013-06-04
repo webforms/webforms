@@ -36,7 +36,6 @@ define(function(require, exports, module){
   var Events = require("events");
 
   var ALL_ELEMENTS = "*";
-  var EVT = new Events();
 
   var Ruler = function(rule){
     this.test = rule;
@@ -59,6 +58,7 @@ define(function(require, exports, module){
 
   var WebForms2 = function(form, options){
     options = options || {};
+    this._EVT = new Events();
 
     if(!options.hasOwnProperty("rules")){
       options.rules = {};
@@ -204,6 +204,7 @@ define(function(require, exports, module){
    */
   function verifyForm(form, options){
     var certified = true;
+    var autoFocus = true;
     // XXX: cache verified radio button.
     //var groupElemCatch = {};
 
@@ -211,6 +212,14 @@ define(function(require, exports, module){
       elem = form.elements[i];
 
       v = verifyFormElement(elem, options, true);
+      if(!v && autoFocus){
+        autoFocus = false;
+        try{
+          elem.select();
+        }catch(ex){
+          this._EVT.trigger("error");
+        }
+      }
       certified = certified && v;
 
       feedback(elem, v, options);
@@ -394,6 +403,7 @@ define(function(require, exports, module){
     }
     return true;
   }
+
   // verify number type.
   function verifyNumber(elem){
     var val = elem.value, min, max;
@@ -419,16 +429,16 @@ define(function(require, exports, module){
         min, max,
         certified = true;
 
-    val = Date.parse(val, format);
+    val = utils.date_parse(val, format);
     certified = certified && (val instanceof Date);
 
     if(utils.hasAttribute(elem, "min")){
-      min = Date.parse(elem.getAttribute("min"), format);
+      min = utils.date_parse(elem.getAttribute("min"), format);
       // XXX: if min not a date, return false?
       certified = certified && (min instanceof Date) && (min > val);
     }
     if(utils.hasAttribute(elem, "max")){
-      max = Date.parse(elem.getAttribute("max"), format);
+      max = utils.date_parse(elem.getAttribute("max"), format);
       // XXX: if min not a date, return false?
       certified = certified && (max instanceof Date) && (max < val);
     }
@@ -533,7 +543,7 @@ define(function(require, exports, module){
    * @param {Function} handler, Event Handler.
    */
   WebForms2.prototype.on = function(evt, handler){
-    return EVT.on(evt, handler);
+    return this._EVT.on(evt, handler);
   };
 
   module.exports = WebForms2;
