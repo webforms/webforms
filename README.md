@@ -137,9 +137,29 @@ WebForms2 出现异常时触发 error 事件。
 注：针对整个表单的事件，参数上下文与单个表单项不同，如下：
 
 * `form.element`: HTMLFormElement, 整个表单本身。
+* `form.action`: 表单的 action 属性。
+* `form.method`: 表单的 method 属性。
 * `form.passedFields`: Array<Field>, 所有通过校验的表单项列表。
 * `form.failedFields`: Array<Field>, 所有未通过校验的表单项列表。
 * `form.passed`: Boolean, 标识整个表单是否通过校验。
+
+### submit
+
+表单校验通过，可以提交表单时触发 submit 事件。
+
+绑定 submit 事件的处理函数中，返回 false 可以取消表单提交。
+希望使用异步方式提交表单时可以使用这种方式。
+
+```js
+webforms2.on("submit", function(form){
+  jQuery.ajax({
+    url: form.action,
+    data: form.queryString(),
+    success: function(){}
+  });
+  return false;
+});
+```
 
 ## TODO
 
