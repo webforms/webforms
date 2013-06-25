@@ -1,5 +1,5 @@
 
-define(function(require, exports){
+define(function(require, exports, module){
 
   // 判断字符串 string 是否以 suffix 结尾。
   //
@@ -66,6 +66,7 @@ define(function(require, exports){
   // @param {Array} list, 指定的列表。
   // @param {Function} handler, 处理函数。
   function each(list, handler){
+    if(!list || !list.length){return;}
     for(var i=0,l=list.length; i<l; i++){
       handler.call(list[i], list[i], i);
     }
@@ -148,11 +149,48 @@ define(function(require, exports){
     return String(source).replace(/([\!\\\/\.\$\*\^\(\)\[\]\{\}\?\+\-\|])/g, "\\$1");
   }
 
-  exports.endsWith = endsWith;
-  exports.isNumber = isNumber;
-  exports.isPositiveNumber = isPositiveNumber;
-  exports.addEventListener = addEventListener;
-  exports.hasAttribute = hasAttribute;
-  exports.each = each;
-  exports.date_parse = date_parse;
+  function typeOf(object){
+    return Object.prototype.toString.call(object);
+  }
+  function extend(){
+    var rst = {};
+    for(var i=0,object,l=arguments.length; i<l; i++){
+      object = arguments[i];
+      for(var key in object){
+        if(object.hasOwnProperty(key)){
+          switch(typeOf(object[key])){
+          case "[object Object]":
+            rst[key] = extend({}, object[key]);
+            break;
+          case "[object Array]":
+            rst[key] = object[key].slice(0);
+            //rst[key] = Array.prototype.slice.call(object[key], 0);
+            break;
+          default:
+            rst[key] = object[key];
+            break;
+          }
+        }
+      }
+    }
+    return rst;
+  }
+
+  function function_createDelegate(instance, method) {
+    return function() {
+      return method.apply(instance, arguments);
+    };
+  }
+
+  module.exports = {
+    endsWith : endsWith,
+    isNumber : isNumber,
+    isPositiveNumber : isPositiveNumber,
+    addEventListener : addEventListener,
+    hasAttribute : hasAttribute,
+    each : each,
+    date_parse : date_parse,
+    extend: extend,
+    function_createDelegate: function_createDelegate
+  };
 });
