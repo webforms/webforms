@@ -11,6 +11,7 @@
     <div class="controls">
       <input type="email" name="username" id="inputEmail"
         placeholder="Email"
+        autofocus
         required verified="" />
       <span id="account-verify-state"></span>
       <span class="help-inline"><strong>*</strong> 必填，请输入您的邮箱账号。</span>
@@ -36,39 +37,51 @@
   </div>
   <div class="control-group">
     <div class="controls">
+      <label class="checkbox" for="copyright">
+        <input type="checkbox" name="copyright" id="copyright" required />
+      我同意 XX 协议 <span id="copyright-msg" class="help-inline"></span></label>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
       <button type="submit" class="btn">Sign up</button>
     </div>
   </div>
 </form>
 
 
-<script type="text/javascript">
+````js
 seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
+    // 表单提示消息区。
+    function messager(elem){
+        return $(elem).parent().children(".help-inline");
+    }
     var form = document.getElementById("form-login");
-    var loginForm = new Validator(form, {
+    var regForm = new Validator(form, {
         rules: {
-            "username": function(value, elem, RULES, callback){
-                $("#account-verify-state").html("正在校验...");
-                $.getJSON('./reg-state.json', function(data) {
-                    $("#account-verify-state").html(data.registered ? "已被注册": "可以注册");
-                    callback(!data.registered);
+            "username": function(field, callback){
+                var msg = messager(field.element);
+                msg.html("正在校验...");
+                $.getJSON('./reg-state.json?email='+encodeURIComponent(field.value), function(data) {
+                    msg.html(data.available ? "可以注册": "已被注册");
+                    callback(data.available);
                 });
             },
-            "password2": function(){
-                console.log(this.value, $("#inputPassword").val());
-                return this.value === $("#inputPassword").val();
+            "password2": function(field){
+                return field.value === $("#inputPassword").val();
             }
         },
-        onerror: {
-            "*": function(elem){
-                $(elem).parent().parent().addClass("error");
+        onfail: {
+            "copyright": function(){
+                $("#copyright-msg").html("(必选)");
             }
         },
         onpass: {
-            "*": function(elem){
-                $(elem).parent().parent().removeClass("error");
+            "copyright": function(){
+                $("#copyright-msg").html("");
             }
-        }
+        },
+        "feedback": "bootstrap"
     });
 });
-</script>
+````
