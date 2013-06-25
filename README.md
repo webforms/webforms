@@ -56,6 +56,19 @@ WebForms2 的构造函数中，参数列表如下：
         * 前缀为 `#` 的 key 表示是针对特定 id 的表单项的定义。
         * 其他的 key 表示是针对特定 name 的表单项的定义。
 
+## 实时校验
+
+实时校验是指用户是输入过程中及时的进行校验，一般可以理解为用户键盘输入过程、
+鼠标点击 checkbox, radio 等过程。
+
+form 元素, field 元素上，都可以使用 `validationRealtime` 和 `validationNonReadtime`
+来指定是否实时校验。form 元素上指定整个表单的校验实时性，field 元素上指定单个
+表单项的校验实时性。
+
+* 整个表单默认是非实时校验的。
+* 可以给单个表单指定实时校验。默认异步校验例外。
+* 同时可以指定整个表单实时校验，但可以指定特定表单项非实时校验。
+
 ## API
 
 ### on(String event, Function handler)
@@ -63,6 +76,21 @@ WebForms2 的构造函数中，参数列表如下：
 绑定事件，在对应事件触发时，执行 handler 函数。
 
 支持的事件请参考 Events 部分。
+
+### each(Function handler)
+
+遍历整个表单的所有表单项。
+
+```js
+new WebForms2("#formId").each(function(field){
+  switch(field.name){
+  case "username":
+    this.RULE.email.test(field.value);
+    break;
+  }
+  // ...
+});
+```
 
 ### String queryString()
 
@@ -129,6 +157,8 @@ WebForms2 出现异常时触发 error 事件。
 常见异常包括：
 
 * 尝试 focus 到第一个未通过校验的表单项失败（由于其处于隐藏状态）
+
+----
 
 ### validated
 
