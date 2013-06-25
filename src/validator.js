@@ -28,8 +28,6 @@
  *     }
  * }
  *
- * TODO: new WebForms2(form, {feedback: "alipay"});
- *
  */
 define(function(require, exports, module){
 
@@ -71,7 +69,8 @@ define(function(require, exports, module){
       form = document.getElementById(form.replace(/^#/, ""));
     }
     var opt = utils.extend(DEFAULT_OPTIONS, options);
-    if(options.hasOwnProperty("autofocus")){
+    // 兼容开发者使用小写属性。
+    if(options && options.hasOwnProperty("autofocus")){
       opt.autoFocus = options.autofocus;
     }
 
