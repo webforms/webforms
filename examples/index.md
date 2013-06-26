@@ -11,6 +11,8 @@
     <div class="controls">
       <input type="text" name="username" id="inputEmail"
         placeholder="Email"
+        autofocus
+        validationIgnore
         required />
       <span class="help-inline"><strong>*</strong> 必填，请输入您的邮箱账号。</span>
     </div>
@@ -37,25 +39,15 @@
 
 <script type="text/javascript">
 seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
-    var form = document.getElementById("form-login");
-    var loginForm = new Validator(form, {
+    var loginForm = new Validator("#form-login", {
         trigger: "blur,keyup",
-        fastbreak: true,
         rules: {
-            "username": function(value, elem, RULES){
-                return RULES.email.test(value) || RULES.mobile.test(value);
+            "username": function(field){
+                return this.RULE.email.test(field.value) ||
+                    this.RULE.mobile.test(field.value);
             }
         },
-        onerror: {
-            "*": function(elem){
-                $(elem).parent().parent().addClass("error");
-            }
-        },
-        onpass: {
-            "*": function(elem){
-                $(elem).parent().parent().removeClass("error");
-            }
-        }
+        feedback: "bootstrap"
     });
 });
 </script>

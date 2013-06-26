@@ -19,8 +19,7 @@
  *         // [id]
  *         "#password": function(elem){}
  *     },
- *     // onerror -> onfail
- *     onerror: {
+ *     onfail: {
  *         "*": function(elem){}
  *     },
  *     onpass: {
@@ -28,7 +27,7 @@
  *         }
  *     }
  * }
- * );
+ *
  */
 define(function(require, exports, module){
 
@@ -56,49 +55,122 @@ define(function(require, exports, module){
     week: new Ruler(verifyWeek)
   };
 
-  var WebForms2 = function(form, options){
-    options = options || {};
-    this._EVT = new Events();
 
-    if(!options.hasOwnProperty("rules")){
-      options.rules = {};
+  var DEFAULT_OPTIONS = {
+    rules: {},
+    onfail: {},
+    onpass: {},
+    trigger: "blur",
+    autoFocus: true
+  };
+
+  var WebForms2 = function(form, options){
+    if("string" === typeof form){
+      form = document.getElementById(form.replace(/^#/, ""));
     }
-    if(!options.hasOwnProperty("onerror")){
-      options.onerror = {};
+    var opt = utils.extend(DEFAULT_OPTIONS, options);
+    // 兼容开发者使用小写属性。
+    if(options && options.hasOwnProperty("autofocus")){
+      opt.autoFocus = options.autofocus;
     }
-    if(!options.hasOwnProperty("onpass")){
-      options.onpass = {};
-    }
+
+    this._EVT = new Events();
+    this._form = form;
+    this.RULE = BUILD_IN_RULES;
 
     var _submit = form.onsubmit;
+    var ME = this;
     form.onsubmit = function(){
       if("function" === _submit && !_submit.call(form)){return false;}
-      return verifyForm(form, options);
+      return verifyForm(form, opt, ME);
     };
 
-    if(!options.hasOwnProperty("trigger")){
-      options.trigger = "blur";
+    if(opt.hasOwnProperty("feedback")){
+      require.async("validator-feedback-"+opt.feedback, function(feedback){
+        bindAll(feedback, ME);
+      });
     }
-    var triggers = options.trigger.split(",");
+
+    ME.on("change", function(field){
+      verifyFormElement(field, opt, ME);
+    });
+    ME.on("blur", function(field){
+      if(!field.realtime){return;}
+      verifyFormElement(field, opt, ME);
+    });
+    // blur,keyup,change
+    //var triggers = opt.trigger.split(",");
     utils.each(form.elements, function(elem){
       // 绑定事件，各个事件触发时进行表单校验。
-      utils.each(triggers, function(trigger){
-        utils.addEventListener(elem, trigger, function(){
-          var certified = verifyFormElement(elem, options);
-          feedback(elem, certified, options);
-        });
-      });
+      //utils.each(triggers, function(trigger){
+        //utils.addEventListener(elem, trigger, function(){
+          //var certified = verifyFormElement(field, opt, ME);
+          //ME._EVT.trigger(certified ? "pass": "fail", field);
+        //});
+      //});
       if(utils.hasAttribute(elem, "verified")){
         utils.addEventListener(elem, "change", function(){
           elem.setAttribute("verified", "");
         });
       }
+      utils.addEventListener(elem, "change", triggerEvent("change", ME));
+      utils.addEventListener(elem, "propertychange", triggerEvent("change", ME));
+      utils.addEventListener(elem, "input", triggerEvent("change", ME));
+      utils.addEventListener(elem, "focus", triggerEvent("focus", ME));
+      utils.addEventListener(elem, "blur", triggerEvent("blur", ME));
+      utils.addEventListener(elem, "mouseover", triggerEvent("mouseover", ME));
+      utils.addEventListener(elem, "mouseout", triggerEvent("mouseout", ME));
     });
+
+    bindAll(options, ME);
 
     // 禁用现代浏览器默认的校验。
     // 避免交互风格不符合要求或不一致。
     form.setAttribute("novalidate", "novalidate");
   };
+
+  function triggerEvent(evt, context){
+    return function(){
+      var field = makeField(this);
+      context._EVT.trigger(evt, field);
+    }
+  }
+
+  // 遍历所有表单项。
+  // @param {Function} handler, 遍历过程中的处理函数。
+  WebForms2.prototype.each = function(handler){
+    utils.each(this._form.elements, function(elem){
+      handler.call(this, makeField(elem));
+    });
+  };
+
+  function bindAll(options, context){
+    bind("pass", options, context);
+    bind("fail", options, context);
+    bind("change", options, context);
+    bind("focus", options, context);
+    bind("blur", options, context);
+    bind("mouseover", options, context);
+    bind("mouseout", options, context);
+  }
+  function bind(evt, options, context){
+    var onevt = "on"+evt;
+    if(!options.hasOwnProperty(onevt)){return;}
+    context.on(evt, function(field){
+      var elem = field.element;
+      if(options[onevt].hasOwnProperty(ALL_ELEMENTS)){
+        options[onevt][ALL_ELEMENTS].call(context, field);
+      }
+      var name = elem.getAttribute("name");
+      if(name && options[onevt].hasOwnProperty(name)){
+        options[onevt][name].call(context, field);
+      }
+      var id = elem.getAttribute("id");
+      if(id && options[onevt].hasOwnProperty("#" + id)){
+        options[onevt]["#" + id].call(context, field);
+      }
+    }, context);
+  }
 
   /**
    * Get HTMLElement's type.
@@ -107,7 +179,7 @@ define(function(require, exports, module){
    */
   function getType(elem){
     // 不是直接用 getAttribute 的原因：
-    // 对于 select, textarea 等可以直接活动 type。
+    // 对于 select, textarea 等可以直接获得 type。
     var type = elem.type;
     // fieldset>legend
     if("undefined" === typeof type){return "";}
@@ -116,142 +188,152 @@ define(function(require, exports, module){
     }
     return type.toLowerCase();
   }
-  // XXX:
-  // @deprecated
+  // 获取表单项的值。
+  // @param {HTMLInputElement} elem, 表单项。
+  // @return {String} 返回表单项的值。
   function getValue(elem){
     if(!elem || !elem.form){return null;}
-    var form = elem.form;
-    var s="", a=[];
-    for (var i=0,type,name,l=form.elements.length; i<l; i++){
-      var e = form.elements[i];
-      type = getType(e);
-      name = e.getAttribute("name") || e.name || "";
-      switch(type){
-      case "submit":
-      case "reset":
-      case "image":
-      case "button":
-        return null;
-      case "radio":
-      case "checkbox":
-        if(!name){return null;}
-        for(var j=0,m=form[name].length; j<m; j++){
-          if(form[name][j].checked){
-            a.push(form[name][j].value);
-          }
-        }
-        return a;
-      case "select-one": // select>option
-        return elem.value;
-      case "select-multiple": // select[multiple]>option
-        for(var k=0,n=elem.length; k<n; k++){
-          if(elem[k].selected){
-            a.push(elem[k].value);
-          }
-        }
-        return a;
-      // XXX: #7. 正确处理 hidden, disabled, readonly 字段。
-      default: // text, textarea, password, hidden, file(only file name).
-        return elem.value;
-      }
-    }
-  }
-
-  /**
-   * 统一反馈函数，单个表单项（包括循环整个表单）的反馈时调用这个函数。
-   *
-   * @param {HTMLElement} elem, 需要反馈的表单项。
-   * @param {Boolean} certified, 是否通过校验。
-   * @param {Object} options, WebForms2 的选项。
-   */
-  function feedback(elem, certified, options){
+    var type = getType(elem);
     var name = elem.getAttribute("name");
-    var id = elem.getAttribute("id");
-    var onerror = options.onerror;
-    var onpass = options.onpass;
+    var form = elem.form;
+    var values = [];
 
-    if(!certified){
-      if(onerror.hasOwnProperty(ALL_ELEMENTS)){
-        onerror[ALL_ELEMENTS].call(elem, elem);
+    switch(type){
+    case "radio":
+    case "checkbox":
+      if(!name){return null;}
+      for(var i=0,l=form[name].length; i<l; i++){
+        if(form[name][i].checked){
+          values.push(form[name][i].value);
+        }
       }
-      if(onerror.hasOwnProperty(name)){
-        onerror[name].call(elem, elem);
+      return values;
+    case "select-multiple": // select[multiple]>option
+      for(var i=0,l=elem.length; i<l; i++){
+        if(elem[i].selected){
+          values.push(elem[i].value);
+        }
       }
-      if(onerror.hasOwnProperty(id)){
-        onerror[id].call(elem, elem);
-      }
-      if(options.fastbreak){
-        return false;
-      }
-    }else{
-      if(onpass.hasOwnProperty(ALL_ELEMENTS)){
-        onpass[ALL_ELEMENTS].call(elem, elem);
-      }
-      if(onpass.hasOwnProperty(name)){
-        onpass[name].call(elem, elem);
-      }
-      if(onpass.hasOwnProperty(id)){
-        onpass[id].call(elem, elem);
-      }
+      return values;
+    // `text`, `textarea`, `password`, `hidden`,
+    // `file`(only file name),
+    // `select-one` (select>option)
+    // `submit`, `reset`, `image`, `button`.
+    default:
+      return elem.value;
     }
   }
 
-  /**
-   * 表单统一验证入口
-   *
-   * @param {HTMLFormElement} form, form element.
-   * @param {Object} options.
-   */
-  function verifyForm(form, options){
+  // 构建通用表单字段信息，用于数据传递。
+  // @param {HTMLInputElement} elem, 表单项元素。
+  // @return {Object}
+  function makeField(elem){
+    var form = elem.form;
+    var ignore = utils.hasAttribute(elem, "validationignore");
+    var attr_realtime = "validationRealtime";
+    var s_realtime = elem.getAttribute(attr_realtime);
+    var realtime = false;
+    if(utils.hasAttribute(elem, attr_realtime) && s_realtime !== "nonrealtime"){
+      realtime = true;
+    }
+    if(!realtime && utils.hasAttribute(form, attr_realtime)){
+      realtime = true;
+    }
+    return {
+      element: elem,
+      name: elem.getAttribute("name"),
+      id: elem.getAttribute("id"),
+      type: getType(elem),
+      value: getValue(elem),
+      realtime: realtime,
+      ignore: ignore
+    };
+  }
+  // 表单统一验证入口
+  //
+  // @param {HTMLFormElement} form, form element.
+  // @param {Object} options.
+  function verifyForm(form, options, context){
     var certified = true;
-    var autoFocus = true;
+    var focused = false; // 自动聚焦标志。
+    var field;
+    var passedFields = []; // 通过校验的字段。
+    var failedFields = []; // 未通过校验的字段。
     // XXX: cache verified radio button.
     //var groupElemCatch = {};
 
     for(var i=0,elem,v,l=form.elements.length; i<l; i++){
       elem = form.elements[i];
 
-      v = verifyFormElement(elem, options, true);
-      if(!v && autoFocus){
-        autoFocus = false;
-        try{
-          elem.select();
-        }catch(ex){
-          this._EVT.trigger("error");
+      field = makeField(elem);
+      if(field.ignore){continue;}
+      v = verifyFormElement(field, options, context);
+      // Note: field 不添加 passed 属性，各个事件中不需要、也不应该需要这个状态。
+      if(!v){
+        failedFields.push(field);
+        if(options.autoFocus && !focused){
+          try{
+            elem.select();
+            focused = true;
+          }catch(ex){
+            context._EVT.trigger("error", field, ex);
+          }
         }
+      }else{
+        passedFields.push(field);
       }
       certified = certified && v;
-
-      feedback(elem, v, options);
     }
+    var _form = {
+      element: form,
+      action: form.getAttribute("action"),
+      method: form.getAttribute("method"),
+      passedFields: passedFields,
+      failedFields: failedFields,
+      passed: certified
+    };
+
+    context._EVT.trigger("validated", _form);
+    if(certified){context._EVT.trigger("submit", _form);}
     return certified;
   }
-  function verifyFormElement(e, options){
-    if(e.readOnly || e.disabled){return true;}
-    var certified = true;
-    var type = getType(e);
-    if(!type){return true;}
-    var val = getValue(e);
 
-    if(utils.hasAttribute(e, "required")){
-      certified = certified && verifyRequired(e, type, val);
+  // 校验一个表单元素。
+  //
+  // @param {HTMLElement} elem, 指定的表单元素。
+  // @param {Object} options, 选项。
+  function verifyFormElement(field, options, context){
+    if(field.ignore){return true;}
+    var elem = field.element;
+    // XXX: #7, 不可编辑表单项的校验。
+    if(elem.readOnly || elem.disabled){return true;}
+    var certified = true;
+    var type = field.type;
+    if(!type || "submit"===type || "button"===type ||
+        "reset"===type || "image"===type || "fieldset"===type){
+      return true;
     }
-    if(utils.hasAttribute(e, "minlength")){
-      certified = certified && verifyMinlength(e, type, val);
+    var val = field.value;
+
+    if(utils.hasAttribute(elem, "required")){
+      certified = certified && verifyRequired(elem, type, val);
     }
-    if(utils.hasAttribute(e, "maxlength")){
-      certified = certified && verifyMaxlength(e, type, val);
+    if(utils.hasAttribute(elem, "minlength")){
+      certified = certified && verifyMinlength(elem, type, val);
+    }
+    if(utils.hasAttribute(elem, "maxlength")){
+      certified = certified && verifyMaxlength(elem, type, val);
     }
     switch(type){
-    case "submit":
-    case "button":
-    case "reset":
-    case "image":
+    //case "submit":
+    //case "button":
+    //case "reset":
+    //case "image":
+      //return true;
     case "radio":
     case "checkbox":
     case "select-one":
     case "select-multiple":
-      break;
     case "text":
     case "password":
     case "hidden":
@@ -259,63 +341,73 @@ define(function(require, exports, module){
     case "textarea":
       break;
     case "file":
-      certified = certified && verifyFile(e);
+      certified = certified && verifyFile(elem);
       break;
     case "number":
     case "range":
-      certified = certified && verifyNumber(e);
+      certified = certified && verifyNumber(elem);
       break;
     case "month":
-      certified = certified && verifyMonth(e);
+      certified = certified && verifyMonth(elem);
       break;
     case "time":
-      certified = certified && verifyTime(e);
+      certified = certified && verifyTime(elem);
       break;
     case "week":
-      certified = certified && verifyWeek(e);
+      certified = certified && verifyWeek(elem);
       break;
     case "date":
-      certified = certified && verifyDate(e);
+      certified = certified && verifyDate(elem);
       break;
     case "datetime":
-      certified = certified && verifyDatetime(e);
+      certified = certified && verifyDatetime(elem);
       break;
     case "datetime-local":
-      certified = certified && verifyDatetimeLocal(e);
+      certified = certified && verifyDatetimeLocal(elem);
       break;
     case "url":
-      certified = certified && verifyUrl(e);
+      certified = certified && verifyUrl(elem);
       break;
     case "email":
-      certified = certified && verifyEmail(e);
+      certified = certified && verifyEmail(elem);
       break;
     case "tel":
-      certified = certified && verifyTel(e);
+      certified = certified && verifyTel(elem);
       break;
     case "color":
-      certified = certified && verifyColor(e);
+      certified = certified && verifyColor(elem);
       break;
     default:
       break;
     }
-    if(utils.hasAttribute(e, "pattern")){
-      certified = certified && verifyPattern(e);
+    if(utils.hasAttribute(elem, "pattern")){
+      certified = certified && verifyPattern(elem);
     }
 
     // verify user custom function.
-    var name = e.getAttribute("name");
-    if(name){
-      certified = certified && verifyFunction(name, e, val, options);
+    var name = elem.getAttribute("name");
+    if(name && options.rules.hasOwnProperty(name) &&
+        "function" === typeof options.rules[name]){
+      certified = certified && verifyFunction(field, options.rules[name], context);
     }
-    var id = e.getAttribute("id");
-    if(id){
-      certified = certified && verifyFunction("#"+id, e, val, options);
+    var id = elem.getAttribute("id");
+    var _id = "#" + id;
+    if(id && options.rules.hasOwnProperty(_id) &&
+        "function" === typeof options.rules[_id]){
+      certified = certified && verifyFunction(field, options.rules[_id], context);
     }
-    // verify async from server.
-    // XXX: init state.
-    if(utils.hasAttribute(e, "verified")){
-      certified = certified && "valid" === e.getAttribute("verified");
+    // 校验异步状态。
+    // 需要异步校验的表单项，需要在表单元素上设置 `verified` 属性，值为空即可。
+    // 表单校验成功后，会设置为合适的值：
+    //
+    //  - [verified=""]        尚未校验。
+    //  - [verified="valid"]   已通过校验。
+    //  - [verified="invalid"] 未通过校验
+    if(utils.hasAttribute(elem, "verified")){
+      certified = certified && "valid" === elem.getAttribute("verified");
     }
+
+    context._EVT.trigger(certified ? "pass": "fail", field);
     return certified;
   }
   // 验证必填项。
@@ -512,25 +604,21 @@ define(function(require, exports, module){
 
   /**
    * 校验自定义函数。
-   * @param {HTMLElement} e, 被校验的表单元素。
+   * @param {HTMLElement} elem, 被校验的表单元素。
    * @param {String} id, 规则 ID.
    * @return {Boolean} 通过校验则返回 true，否则返回 false。
    */
-  function verifyFunction(id, e, val, options){
-    if(id && options.rules.hasOwnProperty(id) &&
-        "function" === typeof options.rules[id]){
+  function verifyFunction(field, rule, context){
+    var elem = field.element;
 
-      // `!!` 是为了避免自定义校验函数返回非 Boolean 类型。
-      return !!options.rules[id].call(e, val, e, BUILD_IN_RULES,
-          // @param {Boolean} state, verify state from server.
-          function(state){
-
-        if(!utils.hasAttribute(e, "verified")){return;}
-        e.setAttribute("verified", state ? "valid" : "invalid");
-      });
-    }
-    // 没有对应自定义函数，直接通过校验。
-    return true;
+    // @param {Boolean} state, verify state for async callback.
+    var certified = rule.call(context, field, function(state){
+      if(!utils.hasAttribute(elem, "verified")){return;}
+      elem.setAttribute("verified", state ? "valid" : "invalid");
+      context._EVT.trigger(state ? "pass" : "fail", field);
+    });
+    // 异步校验的函数可以省略返回。
+    return typeof certified === "undefined" ? true : !!certified;
   }
 
   /**
@@ -544,6 +632,32 @@ define(function(require, exports, module){
    */
   WebForms2.prototype.on = function(evt, handler){
     return this._EVT.on(evt, handler);
+  };
+
+  // @return {String} 根据用户在表单中的输入值，返回表单的查询字符串。
+  WebForms2.prototype.queryString = function(){
+    var query = [];
+    this.each(function(field){
+      switch(field.type){
+      case "radio":
+      case "checkbox":
+        if(field.element.checked){
+          query.push(field.name + "=" + encodeURIComponent(field.value));
+        }
+        break;
+      case "select-multiple":
+        var elem = field.element;
+        var options = elem.options;
+        for(var i=0,l=options.length; i<l; i++){
+          if(options[i].selected){
+            query.push(field.name + "=" + encodeURIComponent(options[i].value));
+          }
+        }
+        break;
+      default:
+        query.push(field.name + "=" + encodeURIComponent(field.value));
+      }
+    });
   };
 
   module.exports = WebForms2;
