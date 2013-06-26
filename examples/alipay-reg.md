@@ -153,8 +153,9 @@
 }
 </style>
 
-<form id="J-index-form" method="post" class="ui-form ui-form-l" action="https://memberprod.alipay.com/account/reg/index.htm">
-        <input type="hidden" name="_form_token" value="LKgfgva3ABH4CQyTReqj5xixONZ9VMXJ"/>
+<form id="J-index-form" method="post" class="ui-form ui-form-l"
+  action="https://memberprod.alipay.com/account/reg/index.htm">
+    <input type="hidden" name="_form_token" value="LKgfgva3ABH4CQyTReqj5xixONZ9VMXJ"/>
 
     <fieldset>
         <legend>注册</legend>

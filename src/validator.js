@@ -94,6 +94,10 @@ define(function(require, exports, module){
     ME.on("change", function(field){
       verifyFormElement(field, opt, ME);
     });
+    ME.on("blur", function(field){
+      if(!field.realtime){return;}
+      verifyFormElement(field, opt, ME);
+    });
     // blur,keyup,change
     //var triggers = opt.trigger.split(",");
     utils.each(form.elements, function(elem){
@@ -224,12 +228,25 @@ define(function(require, exports, module){
   // @param {HTMLInputElement} elem, 表单项元素。
   // @return {Object}
   function makeField(elem){
+    var form = elem.form;
+    var ignore = utils.hasAttribute(elem, "validationignore");
+    var attr_realtime = "validationRealtime";
+    var s_realtime = elem.getAttribute(attr_realtime);
+    var realtime = false;
+    if(utils.hasAttribute(elem, attr_realtime) && s_realtime !== "nonrealtime"){
+      realtime = true;
+    }
+    if(!realtime && utils.hasAttribute(form, attr_realtime)){
+      realtime = true;
+    }
     return {
       element: elem,
       name: elem.getAttribute("name"),
       id: elem.getAttribute("id"),
       type: getType(elem),
-      value: getValue(elem)
+      value: getValue(elem),
+      realtime: realtime,
+      ignore: ignore
     };
   }
   // 表单统一验证入口
@@ -249,6 +266,7 @@ define(function(require, exports, module){
       elem = form.elements[i];
 
       field = makeField(elem);
+      if(field.ignore){continue;}
       v = verifyFormElement(field, options, context);
       // Note: field 不添加 passed 属性，各个事件中不需要、也不应该需要这个状态。
       if(!v){
@@ -285,6 +303,7 @@ define(function(require, exports, module){
   // @param {HTMLElement} elem, 指定的表单元素。
   // @param {Object} options, 选项。
   function verifyFormElement(field, options, context){
+    if(field.ignore){return true;}
     var elem = field.element;
     // XXX: #7, 不可编辑表单项的校验。
     if(elem.readOnly || elem.disabled){return true;}

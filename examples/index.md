@@ -12,6 +12,7 @@
       <input type="text" name="username" id="inputEmail"
         placeholder="Email"
         autofocus
+        validationIgnore
         required />
       <span class="help-inline"><strong>*</strong> 必填，请输入您的邮箱账号。</span>
     </div>
