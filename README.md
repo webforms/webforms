@@ -56,20 +56,97 @@ WebForms2 的构造函数中，参数列表如下：
         * 前缀为 `#` 的 key 表示是针对特定 id 的表单项的定义。
         * 其他的 key 表示是针对特定 name 的表单项的定义。
 
-## 实时校验
+## HTML API
 
-实时校验是指用户是输入过程中及时的进行校验，一般可以理解为用户键盘输入过程、
-鼠标点击 checkbox, radio 等过程。
+参考 HTML5 的表单定义，并做了少许补充。
 
-form 元素, field 元素上，都可以使用 `validationRealtime` 和 `validationNonReadtime`
-来指定是否实时校验。form 元素上指定整个表单的校验实时性，field 元素上指定单个
-表单项的校验实时性。
+### form[validationRealtime]
 
-* 整个表单默认是非实时校验的。
-* 可以给单个表单指定实时校验。默认异步校验例外。
-* 同时可以指定整个表单实时校验，但可以指定特定表单项非实时校验。
+定义整个表单是否使用实时校验。
 
-## API
+默认不添加 `validationRealtime` 属性时，整个表单默认不进行实时校验。
+
+### field[validationRealtime]
+
+定义单个表单项是否使用实时校验。添加 `validationRealtime` 属性默认为使用实时校验，
+除非 `field[validationRealtime=nonrealtime]`。
+
+注：`field` 为表单项统称，包括 `input`, `select`, `textarea`, `button` 等。下同。
+
+### field[required]
+
+声明表单项为必填项。
+
+### field[maxlength=number]
+
+声明表单项的可填写最大长度为 `number`。
+
+### field[minlength=number]
+
+声明表单项的填写最小长度为 `number`。
+
+### field[max]
+
+指定表单项的最大值。用户可以输入小于或等于这个值的内容。
+
+使用的 `field` 包括数值和日期型表单项，如：`input[type=number]`, `input[type=date]`, ...
+
+### field[min]
+
+指定表单项的最小值。用户可以输入大于或等于这个值的内容。
+
+使用的 `field` 包括数值和日期型表单项。
+
+### field[pattern]
+
+指定表单项的校验规则表达式。
+
+pattern 的值是正则表达式，用户输入的内容必须匹配这个表达式。
+
+### field[validated]
+
+异步校验的表单项需要设置这个属性，默认值留空即可。
+
+### input[type]
+
+指定表单项的类型，支持的类型包括：
+
+* `text`: 文本输入框。
+* `radio`: 单选框。
+* `checkbox`: 复选框。
+* `password`: 密码框。
+* `hidden`: 隐藏表单项。
+* `search`: 搜索框。
+* `file`: 文件选择输入框。
+* `number`: 数值输入框。
+* `range`: 范围选择、输入框。
+* `date`: 日期输入框。
+* `time`: 时间输入框。
+* `datetime`: 日期时间输入框。
+* `month`: 月份输入框。
+* `week`: 星期（周）输入框。
+* `datetime-local`: 本地日期时间输入框。
+* `url`: 网址输入框。
+* `email`: 邮箱地址输入框。
+* `tel`: 联系电话输入框。
+* `color`: 色彩输入框。
+
+### input[type=file][accept]
+
+指定文件输入框限制的文件类型。
+
+如：
+
+```html
+<input type="file" accept="image/jpg,.png,video/*" />
+```
+
+accept 属性支持 MIME-TYPE 和后缀设定。更多参考：
+
+* [规范文档](http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#attr-input-accept)
+* [RFC1867](http://tools.ietf.org/html/rfc1867)
+
+## JavaScript API
 
 ### on(String event, Function handler)
 
