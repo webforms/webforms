@@ -2,12 +2,8 @@ define(function(require, exports, module) {
 
   var utils = require("./utils");
   var Events = require("events");
-
   var Validator = require("./validator");
   var AutoFocus = require("./autofocus");
-
-  var testInput = document.createElement("input");
-  var supportAutoFocus = "autofocus" in testInput;
 
   // 构造函数。
   // @param {HTMLFormElement} form, 表单对象。
@@ -24,18 +20,6 @@ define(function(require, exports, module) {
       ME._evt.trigger("validate:fail");
     });
     // TODO: trigger form validate passed event.
-
-    // field[autofocus]
-    if(!supportAutoFocus){
-      this.each(function(field){
-        if(utils.hasAttribute(field, "autofocus")){
-          try{
-            field.select();
-            return false;
-          }catch(ex){}
-        }
-      });
-    }
 
   };
 
