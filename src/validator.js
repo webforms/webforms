@@ -81,7 +81,7 @@ define(function(require, exports, module){
     var _submit = form.onsubmit;
     var ME = this;
     form.onsubmit = function(){
-      if("function" === _submit && !_submit.call(form)){return false;}
+      if("function" === typeof _submit && !_submit.call(form)){return false;}
       return verifyForm(form, opt, ME);
     };
 

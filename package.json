@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "WebForms2",
   "homepage": "https://github.com/hotoo/webforms2",
-  "author": "",
-  "repository": "git://github.com/hotoo/webforms2.git",
+  "author": "闲耘<hotoo.cn[AT]gmail.com>",
+  "repository": "https://github.com/hotoo/webforms2.git",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/hotoo/webforms2/issues"
   },
   "keywords": ["widget"],
   "licenses": "MIT",

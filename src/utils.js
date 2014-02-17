@@ -66,7 +66,7 @@ define(function(require, exports, module){
   // @param {Array} list, 指定的列表。
   // @param {Function} handler, 处理函数。
   function each(list, handler){
-    if(!list || !list.length){return;}
+    if(!list || !list.length || "[object Function]"!==typeOf(handler)){return;}
     for(var i=0,l=list.length; i<l; i++){
       handler.call(list[i], list[i], i);
     }
