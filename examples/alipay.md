@@ -71,13 +71,15 @@
 ````js
 seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
     var form = document.getElementById("test-form");
-    var regForm = new Validator(form, {
-        rules: {
-            "password-confirmation": function(field){
-                return field.value === $("#password").val();
-            }
-        },
-        "feedback": "alipay"
+    var regForm = new WebForms2("test-form", {
+        validator: {
+            rules: {
+                "password-confirmation": function(field){
+                    return field.value === $("#password").val();
+                }
+            },
+            "feedback": "alipay"
+        }
     });
 });
 ````

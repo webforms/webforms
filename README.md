@@ -60,22 +60,15 @@ WebForms2 的构造函数中，参数列表如下：
 
 参考 HTML5 的表单定义，并做了少许补充。
 
-### form[validationRealtime]
+### form[novalidate]
 
-定义整个表单是否使用实时校验。
-
-默认不添加 `validationRealtime` 属性时，整个表单默认不进行实时校验。
-
-### field[validationRealtime]
-
-定义单个表单项是否使用实时校验。添加 `validationRealtime` 属性默认为使用实时校验，
-除非 `field[validationRealtime=nonrealtime]`。
-
-注：`field` 为表单项统称，包括 `input`, `select`, `textarea`, `button` 等。下同。
+指定当前表单不进行输入合法性校验。
 
 ### field[required]
 
 声明表单项为必填项。
+
+注：`field` 为表单项统称，包括 `input`, `select`, `textarea`, `button` 等。下同。
 
 ### field[maxlength=number]
 
@@ -107,7 +100,7 @@ pattern 的值是正则表达式，用户输入的内容必须匹配这个表达
 
 异步校验的表单项需要设置这个属性，默认值留空即可。
 
-### field[validationIgnore]
+### field[formnovalidate]
 
 指定忽略校验的表单项。
 
@@ -150,6 +143,19 @@ accept 属性支持 MIME-TYPE 和后缀设定。更多参考：
 * [规范文档](http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#attr-input-accept)
 * [RFC1867](http://tools.ietf.org/html/rfc1867)
 
+### form[validationRealtime]
+
+定义整个表单是否使用实时校验。
+
+默认不添加 `validationRealtime` 属性时，整个表单默认不进行实时校验。
+
+### field[validationRealtime]
+
+定义单个表单项是否使用实时校验。添加 `validationRealtime` 属性默认为使用实时校验，
+除非 `field[validationRealtime=nonrealtime]`。
+
+
+
 ## JavaScript API
 
 ### on(String event, Function handler)
@@ -190,15 +196,15 @@ WebForms2 提供了完整的事件模型，通过监听各种事件就可以几�
   * `field.value`: 表单项当前的值。
   * `field.element`: 表单项本身的 HTMLElement。
 
-### pass
+### valid
 
-单个表单项通过校验时触发 pass 事件。
+单个表单项通过校验时触发 `valid` 事件。
 
 ```js
 var WebForms2 = require("WebForms2");
 
 var webforms2 = new WebForms2("#formId");
-webforms2.on("pass", function(field){
+webforms2.on("valid", function(field){
   switch(field.name){
   case "username":
     //...
@@ -207,37 +213,37 @@ webforms2.on("pass", function(field){
 });
 ```
 
-### fail
+### invalid
 
-单个表达项未通过校验时触发 fail 事件。
+单个表达项未通过校验时触发 `invalid` 事件。
 
 ### change
 
-单个表单项发生变更时触发 change 事件。
+单个表单项发生变更时触发 `change` 事件。
 
 ### focus
 
-单个表单项获得焦点时触发 focus 事件。
+单个表单项获得焦点时触发 `focus` 事件。
 
 ### blur
 
-单个表单项失去焦点时触发 blur 事件。
+单个表单项失去焦点时触发 `blur` 事件。
 
 ### mouseover
 
-鼠标进入单个表单项时触发 mouseover 事件。
+鼠标进入单个表单项时触发 `mouseover` 事件。
 
 ### mouseout
 
-鼠标离开单个表单项时触发 mouseout 事件。
+鼠标离开单个表单项时触发 `mouseout` 事件。
 
 ### error
 
-WebForms2 出现异常时触发 error 事件。
+WebForms2 出现异常时触发 `error` 事件。
 
 常见异常包括：
 
-* 尝试 focus 到第一个未通过校验的表单项失败（由于其处于隐藏状态）
+* 尝试 `focus` 到第一个未通过校验的表单项失败（由于其处于隐藏状态）
 
 ----
 

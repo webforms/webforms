@@ -1,6 +1,27 @@
 
 define(function(require, exports, module){
 
+  function startsWith(string, suffix) {
+    return string.indexOf(suffix) === 0;
+  }
+
+  // TODO: deep merge.
+  // @param {Object} ...
+  // @return {Object} the new object.
+  function merge(){
+
+    var rst = {};
+
+    for(var i=0,l=arguments.length; i<l; i++){
+      for(var key in arguments[i]){
+        if(!arguments[i].hasOwnProperty(key)){continue;}
+        rst[key] = arguments[i][key];
+      }
+    }
+
+    return rst;
+  }
+
   // 判断字符串 string 是否以 suffix 结尾。
   //
   // @param {String} string, target string.
@@ -183,12 +204,14 @@ define(function(require, exports, module){
   }
 
   module.exports = {
+    startsWith: startsWith,
     endsWith : endsWith,
     isNumber : isNumber,
     isPositiveNumber : isPositiveNumber,
     addEventListener : addEventListener,
     hasAttribute : hasAttribute,
     each : each,
+    merge: merge,
     date_parse : date_parse,
     extend: extend,
     function_createDelegate: function_createDelegate

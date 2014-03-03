@@ -10,7 +10,7 @@
  *
  * Example:
  *
- * new WebForms2(
+ * new Validator(
  *     document.getElementById("formId"), {
  *     trigger: "blur,keyup", // default & required trigger: submit.
  *     rules: {
@@ -19,10 +19,10 @@
  *         // [id]
  *         "#password": function(elem){}
  *     },
- *     onfail: {
+ *     oninvalid: {
  *         "*": function(elem){}
  *     },
- *     onpass: {
+ *     onvalid: {
  *         "*": function(elem){
  *         }
  *     }
@@ -33,6 +33,7 @@ define(function(require, exports, module){
 
   var utils = require("./utils");
   var Events = require("events");
+  var $ = require("$");
 
   var ALL_ELEMENTS = "*";
 
@@ -58,75 +59,77 @@ define(function(require, exports, module){
 
   var DEFAULT_OPTIONS = {
     rules: {},
-    onfail: {},
-    onpass: {},
+    oninvalid: {},
+    onvalid: {},
     trigger: "blur",
-    autoFocus: true
+    autoFocus: true // 校验失败时是否自动聚焦在第一个未通过校验的表单项。
   };
 
-  var WebForms2 = function(form, options){
-    if("string" === typeof form){
-      form = document.getElementById(form.replace(/^#/, ""));
-    }
-    var opt = utils.extend(DEFAULT_OPTIONS, options);
+  var Validator = function(webforms, options){
+
+    options = this.options = utils.extend(DEFAULT_OPTIONS, options);
     // 兼容开发者使用小写属性。
     if(options && options.hasOwnProperty("autofocus")){
-      opt.autoFocus = options.autofocus;
+      options.autoFocus = options.autofocus;
     }
 
     this._EVT = new Events();
-    this._form = form;
+    this._webforms2 = webforms;
+    this.form = webforms.form;
     this.RULE = BUILD_IN_RULES;
 
-    var _submit = form.onsubmit;
+    var _submit = this.form.onsubmit;
     var ME = this;
-    form.onsubmit = function(){
-      if("function" === typeof _submit && !_submit.call(form)){return false;}
-      return verifyForm(form, opt, ME);
+    this.form.onsubmit = function(){
+      if("function" === typeof _submit && !_submit.call(this)){return false;}
+      return verifyForm(this, options, ME);
     };
 
-    if(opt.hasOwnProperty("feedback")){
-      require.async("validator-feedback-"+opt.feedback, function(feedback){
-        bindAll(feedback, ME);
-      });
+    if(options.hasOwnProperty("feedback")){
+      ME.bindAll(options.feedback);
     }
 
     ME.on("change", function(field){
-      verifyFormElement(field, opt, ME);
+      verifyFormElement(field, options, ME);
     });
     ME.on("blur", function(field){
       if(!field.realtime){return;}
-      verifyFormElement(field, opt, ME);
+      verifyFormElement(field, options, ME);
     });
+
     // blur,keyup,change
-    //var triggers = opt.trigger.split(",");
-    utils.each(form.elements, function(elem){
+    //var triggers = options.trigger.split(",");
+    this._webforms2.each(function(element){
       // 绑定事件，各个事件触发时进行表单校验。
       //utils.each(triggers, function(trigger){
         //utils.addEventListener(elem, trigger, function(){
-          //var certified = verifyFormElement(field, opt, ME);
-          //ME._EVT.trigger(certified ? "pass": "fail", field);
+          //var certified = verifyFormElement(field, options, ME);
+          //ME._EVT.trigger(certified ? "valid": "invalid", field);
         //});
       //});
-      if(utils.hasAttribute(elem, "verified")){
-        utils.addEventListener(elem, "change", function(){
-          elem.setAttribute("verified", "");
+      elem = $(element);
+
+      if(utils.hasAttribute(element, "verified")){
+        elem.change(function(){
+          elem.attr("verified", "");
         });
       }
-      utils.addEventListener(elem, "change", triggerEvent("change", ME));
-      utils.addEventListener(elem, "propertychange", triggerEvent("change", ME));
-      utils.addEventListener(elem, "input", triggerEvent("change", ME));
-      utils.addEventListener(elem, "focus", triggerEvent("focus", ME));
-      utils.addEventListener(elem, "blur", triggerEvent("blur", ME));
-      utils.addEventListener(elem, "mouseover", triggerEvent("mouseover", ME));
-      utils.addEventListener(elem, "mouseout", triggerEvent("mouseout", ME));
+      elem.change(triggerEvent("change", ME));
+      //utils.addEventListener(elem, "propertychange", triggerEvent("change", ME));
+      elem.on("input", triggerEvent("change", ME));
+      elem.focus(triggerEvent("focus", ME));
+      elem.blur(triggerEvent("blur", ME));
+      elem.mouseover(triggerEvent("mouseover", ME));
+      elem.mouseout(triggerEvent("mouseout", ME));
     });
 
-    bindAll(options, ME);
+    ME.bindAll(options);
 
     // 禁用现代浏览器默认的校验。
     // 避免交互风格不符合要求或不一致。
-    form.setAttribute("novalidate", "novalidate");
+    try{
+      this.form.setAttribute("novalidate", "novalidate");
+    }catch(ex){}
   };
 
   function triggerEvent(evt, context){
@@ -138,38 +141,41 @@ define(function(require, exports, module){
 
   // 遍历所有表单项。
   // @param {Function} handler, 遍历过程中的处理函数。
-  WebForms2.prototype.each = function(handler){
-    utils.each(this._form.elements, function(elem){
+  Validator.prototype.each = function(handler){
+    utils.each(this.form.elements, function(elem){
       handler.call(this, makeField(elem));
     });
   };
 
-  function bindAll(options, context){
-    bind("pass", options, context);
-    bind("fail", options, context);
-    bind("change", options, context);
-    bind("focus", options, context);
-    bind("blur", options, context);
-    bind("mouseover", options, context);
-    bind("mouseout", options, context);
+  // 批量绑定
+  Validator.prototype.bindAll = function(options){
+    this.bind("valid", options);
+    this.bind("invalid", options);
+    this.bind("change", options);
+    this.bind("focus", options);
+    this.bind("blur", options);
+    this.bind("mouseover", options);
+    this.bind("mouseout", options);
   }
-  function bind(evt, options, context){
+  // 绑定对应事件为 options 对应的处理函数。
+  Validator.prototype.bind = function(evt, options){
     var onevt = "on"+evt;
     if(!options.hasOwnProperty(onevt)){return;}
-    context.on(evt, function(field){
+
+    this.on(evt, function(field){
       var elem = field.element;
       if(options[onevt].hasOwnProperty(ALL_ELEMENTS)){
-        options[onevt][ALL_ELEMENTS].call(context, field);
+        options[onevt][ALL_ELEMENTS].call(this, field);
       }
       var name = elem.getAttribute("name");
       if(name && options[onevt].hasOwnProperty(name)){
-        options[onevt][name].call(context, field);
+        options[onevt][name].call(this, field);
       }
       var id = elem.getAttribute("id");
       if(id && options[onevt].hasOwnProperty("#" + id)){
-        options[onevt]["#" + id].call(context, field);
+        options[onevt]["#" + id].call(this, field);
       }
-    }, context);
+    }, this);
   }
 
   /**
@@ -229,7 +235,7 @@ define(function(require, exports, module){
   // @return {Object}
   function makeField(elem){
     var form = elem.form;
-    var ignore = utils.hasAttribute(elem, "validationignore");
+    var formnovalidate = utils.hasAttribute(elem, "formnovalidate");
     var attr_realtime = "validationRealtime";
     var s_realtime = elem.getAttribute(attr_realtime);
     var realtime = false;
@@ -239,14 +245,29 @@ define(function(require, exports, module){
     if(!realtime && utils.hasAttribute(form, attr_realtime)){
       realtime = true;
     }
+    var customError = elem.getAttribute("validation-message");
+
     return {
+      form: form,
       element: elem,
       name: elem.getAttribute("name"),
       id: elem.getAttribute("id"),
       type: getType(elem),
       value: getValue(elem),
       realtime: realtime,
-      ignore: ignore
+      willValidate: !formnovalidate,
+      validity: {
+        customError: !!customError,
+        patternMismatch: false,
+        rangeOverflow: false,
+        rangeUnderflow: false,
+        stepMismatch: false,
+        tooLong: false,
+        typeMismatch: false,
+        valueMissing: false,
+        badInput: false,
+        valid: false
+      }
     };
   }
   // 表单统一验证入口
@@ -266,7 +287,8 @@ define(function(require, exports, module){
       elem = form.elements[i];
 
       field = makeField(elem);
-      if(field.ignore){continue;}
+      if(field.willValidate === false){continue;}
+
       v = verifyFormElement(field, options, context);
       // Note: field 不添加 passed 属性，各个事件中不需要、也不应该需要这个状态。
       if(!v){
@@ -298,12 +320,17 @@ define(function(require, exports, module){
     return certified;
   }
 
+  // 执行表单输入合法性校验。
+  Validator.prototype.validate = function(){
+    return verifyForm(this.form, this.options, this);
+  };
+
   // 校验一个表单元素。
   //
   // @param {HTMLElement} elem, 指定的表单元素。
   // @param {Object} options, 选项。
   function verifyFormElement(field, options, context){
-    if(field.ignore){return true;}
+    if(!field.willValidate){return true;}
     var elem = field.element;
     // XXX: #7, 不可编辑表单项的校验。
     if(elem.readOnly || elem.disabled){return true;}
@@ -316,13 +343,16 @@ define(function(require, exports, module){
     var val = field.value;
 
     if(utils.hasAttribute(elem, "required")){
-      certified = certified && verifyRequired(elem, type, val);
+      certified = certified &&
+        (field.validity.valueMissing = verifyRequired(field));
     }
     if(utils.hasAttribute(elem, "minlength")){
-      certified = certified && verifyMinlength(elem, type, val);
+      certified = certified &&
+        (field.validity.valid = verifyMinlength(field));
     }
     if(utils.hasAttribute(elem, "maxlength")){
-      certified = certified && verifyMaxlength(elem, type, val);
+      certified = certified &&
+        (field.validity.tooLong = verifyMaxlength(elem, type, val));
     }
     switch(type){
     //case "submit":
@@ -407,16 +437,20 @@ define(function(require, exports, module){
       certified = certified && "valid" === elem.getAttribute("verified");
     }
 
-    context._EVT.trigger(certified ? "pass": "fail", field);
+    context._EVT.trigger(certified ? "valid": "invalid", field);
     return certified;
   }
   // 验证必填项。
-  function verifyRequired(elem, type, val){
-    var form = elem.form,
-        name = elem.name,
-        elems = form[name],
-        required = utils.hasAttribute(elem, "required"),
-        checked = false;
+  function verifyRequired(field){
+    var form = field.form;
+    var elem = field.element;
+    var name = field.name;
+    var type = field.type;
+    var val = field.value;
+    var elems = form[name];
+    var required = utils.hasAttribute(elem, "required");
+    var checked = false;
+
     switch(type){
     case "radio":
       // XXX: ignore verifyed radio group.
@@ -433,26 +467,31 @@ define(function(require, exports, module){
       return val && val.length > 0;
     case "password":
       return "" !== elem.value;
-      //case "select-one":
-      //case "text":
-      //case "...":
+    //case "select-one":
+    //case "text":
+    //case "...":
     default:
       return !/^\s*$/.test(elem.value);
     }
   }
-  function verifyMinlength(elem, type, val){
-    switch(type){
+
+  function verifyMinlength(field){
+
+    switch(field.type){
     case "radio":
     case "checkbox":
     case "select-multiple":
     case "select-one":
       return true;
-      //case "text":
+    //case "text":
     default:
       break;
     }
-    var minlength = elem.getAttribute("minlength");
-    if(/^\d+$/.test(minlength) && (val.length < parseInt(minlength, 10))){
+
+    var minlength = field.element.getAttribute("minlength");
+    if(/^\d+$/.test(minlength) &&
+        (field.value.length < parseInt(minlength, 10))){
+
       return false;
     }
     return true;
@@ -615,50 +654,30 @@ define(function(require, exports, module){
     var certified = rule.call(context, field, function(state){
       if(!utils.hasAttribute(elem, "verified")){return;}
       elem.setAttribute("verified", state ? "valid" : "invalid");
-      context._EVT.trigger(state ? "pass" : "fail", field);
+      context._EVT.trigger(state ? "valid" : "invalid", field);
     });
     // 异步校验的函数可以省略返回。
     return typeof certified === "undefined" ? true : !!certified;
   }
 
   /**
-   * 绑定 WebForms2 的事件。
-   * WebForms2 支持以下事件类型：
+   * 绑定 Validator 的事件。
+   * Validator 支持以下事件类型：
    *
    *    - error
    *
    * @param {String} evt, Event Type.
    * @param {Function} handler, Event Handler.
    */
-  WebForms2.prototype.on = function(evt, handler){
-    return this._EVT.on(evt, handler);
+  Validator.prototype.on = function(evt, handler){
+    if(!evt || "function"!==typeof handler){return this;}
+    this._EVT.on(evt, handler);
+    return this;
+  };
+  Validator.prototype.off = function(evt, handler){
+    this._EVT.off(evt, handler);
+    return this;
   };
 
-  // @return {String} 根据用户在表单中的输入值，返回表单的查询字符串。
-  WebForms2.prototype.queryString = function(){
-    var query = [];
-    this.each(function(field){
-      switch(field.type){
-      case "radio":
-      case "checkbox":
-        if(field.element.checked){
-          query.push(field.name + "=" + encodeURIComponent(field.value));
-        }
-        break;
-      case "select-multiple":
-        var elem = field.element;
-        var options = elem.options;
-        for(var i=0,l=options.length; i<l; i++){
-          if(options[i].selected){
-            query.push(field.name + "=" + encodeURIComponent(options[i].value));
-          }
-        }
-        break;
-      default:
-        query.push(field.name + "=" + encodeURIComponent(field.value));
-      }
-    });
-  };
-
-  module.exports = WebForms2;
+  module.exports = Validator;
 });
