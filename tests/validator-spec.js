@@ -83,7 +83,57 @@ define(function(require) {
         '<input type="password" name="password2" value="abc" required />',
         testRequiredValid,
         'password2'
-      ]
+      ],
+
+      [ 'textarea[required][value=""]:invalid',
+        '<textarea name="textarea0" required></textarea>',
+        testRequiredInvalid,
+        'textarea0'
+      ],
+      [ 'textarea[required][value=" "]:invalid',
+        '<textarea name="textarea1" required> </textarea>',
+        testRequiredInvalid,
+        'textarea1'
+      ],
+      [ 'textarea[required][value="\\r \\n"]:invalid',
+        '<textarea name="textarea2" required> \r\n \r \n </textarea>',
+        testRequiredInvalid,
+        'textarea2'
+      ],
+      [ 'textarea[required][value="abc"]:valid',
+        '<textarea name="textarea3" required>abc</textarea>',
+        testRequiredValid,
+        'textarea3'
+      ],
+
+      [ 'input[type=radio][required]:invalid',
+        '<input type="radio" name="radio-0" required />',
+        testRequiredInvalid,
+        'radio-0'
+      ],
+      [ 'input[type=radio][required][checked]:vald',
+        '<input type="radio" name="radio-1" checked required />',
+        testRequiredValid,
+        'radio-1'
+      ],
+      [ 'input[type=radio][required][checked]*2:vald',
+        '<input type="radio" name="radio-2" checked required />'+
+        '<input type="radio" name="radio-2" />',
+        testRequiredValid,
+        'radio-2'
+      ],
+      [ 'input[type=radio][required][checked]*3:vald',
+        '<input type="radio" name="radio-3" />'+
+        '<input type="radio" name="radio-3" checked required />'+
+        '<input type="radio" name="radio-3" />',
+        testRequiredValid,
+        'radio-3'
+      ],
+      [ 'input[type=password][required][value="abc"]:vald',
+        '<input type="password" name="password2" value="abc" required />',
+        testRequiredValid,
+        'password2'
+      ],
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){

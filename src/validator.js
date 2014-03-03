@@ -440,6 +440,17 @@ define(function(require, exports, module){
     context._EVT.trigger(certified ? "valid": "invalid", field);
     return certified;
   }
+
+  // 获取表单中zhi d指定名称的元素。
+  // 当表单中没有同名元素时，form[name] 返回的是元素本身，而不是数组。
+  // @param {HTMLFormElement} form
+  // @param {String} name
+  // @return {Array} 返回表单中名称匹配的所有元素。
+  function getFormElementsByName(form, name){
+    var elems = form[name];
+    return elems.length ? elems : [elems];
+  }
+
   // 验证必填项。
   function verifyRequired(field){
     var form = field.form;
@@ -454,12 +465,13 @@ define(function(require, exports, module){
     switch(type){
     case "radio":
       // XXX: ignore verifyed radio group.
-      //if(this._cacheRadio.hasOwnProperty(name)){return true;}
-      utils.each(elem.form[elem.name], function(elem){
+      if(!this._cached_radio){this._cached_radio = {};}
+      if(this._cached_radio.hasOwnProperty(name)){return true;}
+      utils.each(getFormElementsByName(form, name), function(elem){
         if(utils.hasAttribute(elem, "required")){required = true;}
         if(elem.checked){checked = true;}
       });
-      //this._cacheRadio[name] = checked;
+      this._cached_radio[name] = checked;
       return required && checked;
     case "checkbox":
       return elem.checked;
