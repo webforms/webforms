@@ -3,6 +3,9 @@
 
 ---
 
+[![Build Status](https://travis-ci.org/hotoo/webforms2.png)](https://travis-ci.org/hotoo/webforms2)
+[![Coverage Status](https://coveralls.io/repos/hotoo/webforms2/badge.png?branch=master)](https://coveralls.io/r/hotoo/webforms2)
+
 
 语义化 Web 表单，提供体系完整、灵活高效、高度一致的 Web 表单方案。
 
