@@ -10,7 +10,7 @@ define(function(require) {
     return $(template_form_start + html + template_form_end).appendTo(document.body);
   }
 
-  describe('form:validator', function() {
+  describe('validator', function() {
 
     function testRequiredInvalid(webforms2, data, done){
       webforms2.on("validate:invalid", function(field){
@@ -25,12 +25,11 @@ define(function(require) {
     }
 
     function testRequiredValid(webforms2, data, done){
-      webforms2.on("validate:invald", function(field){
+      webforms2.on("validate:invalid", function(field){
         expect(true).to.equal(false);
         done();
       });
       webforms2.on("validate:valid", function(field){
-        console.log(1, field)
         var name = field.name;
         expect(field.name).to.equal(data.name);
         done();
@@ -38,12 +37,12 @@ define(function(require) {
     }
 
     var testCases = [
-      [ 'input[required][value=""]:invald',
+      [ 'input[required][value=""]:invalid',
         '<input name="unknow0" value="" required />',
         testRequiredInvalid,
         'unknow0'
       ],
-      [ 'input[required][value=" "]:invald',
+      [ 'input[required][value=" "]:invalid',
         '<input name="unknow1" value=" " required />',
         testRequiredInvalid,
         'unknow1'
@@ -54,12 +53,12 @@ define(function(require) {
         'unknow2'
       ],
 
-      [ 'input[type=text][required][value=""]:invald',
+      [ 'input[type=text][required][value=""]:invalid',
         '<input type="text" name="text0" value="" required />',
         testRequiredInvalid,
         'text0'
       ],
-      [ 'input[type=text][required][value=" "]:invald',
+      [ 'input[type=text][required][value=" "]:invalid',
         '<input type="text1" name="text1" value=" " required />',
         testRequiredInvalid,
         'text1'
@@ -70,14 +69,14 @@ define(function(require) {
         'text2'
       ],
 
-      [ 'input[type=password][required][value=""]:invald',
+      [ 'input[type=password][required][value=""]:invalid',
         '<input type="password" name="password0" value="" required />',
         testRequiredInvalid,
         'password0'
       ],
-      [ 'input[type=password][required][value=" "]:invald',
+      [ 'input[type=password][required][value=" "]:vald',
         '<input type="password" name="password1" value=" " required />',
-        testRequiredInvalid,
+        testRequiredValid,
         'password1'
       ],
       [ 'input[type=password][required][value="abc"]:vald',
