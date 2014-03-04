@@ -37,6 +37,9 @@ define(function(require, exports, module){
 
   var ALL_ELEMENTS = "*";
 
+  var RE_BLANK = /^\s*$/; // 空白字符。
+  var RE_INT = /^\d+$/; // 数值。
+
   var Ruler = function(rule){
     this.test = rule;
   };
@@ -465,7 +468,6 @@ define(function(require, exports, module){
 
     switch(type){
     case "radio":
-      // XXX: ignore verifyed radio group.
       if(!this._cached_radio){this._cached_radio = {};}
       if(this._cached_radio.hasOwnProperty(name)){
         return this._cached_radio[name];
@@ -486,7 +488,7 @@ define(function(require, exports, module){
     //case "text":
     //case "...":
     default:
-      return !/^\s*$/.test(elem.value);
+      return !RE_BLANK.test(elem.value);
     }
   }
 
@@ -504,7 +506,7 @@ define(function(require, exports, module){
     }
 
     var minlength = field.element.getAttribute("minlength");
-    if(/^\d+$/.test(minlength) &&
+    if(RE_INT.test(minlength) &&
         (field.value.length < parseInt(minlength, 10))){
 
       return false;
@@ -523,7 +525,7 @@ define(function(require, exports, module){
       break;
     }
     var maxlength = elem.getAttribute("maxlength");
-    if(/^\d+$/.test(maxlength) && (val.length > parseInt(maxlength, 10))){
+    if(RE_INT.test(maxlength) && (val.length > parseInt(maxlength, 10))){
       return false;
     }
     return true;
