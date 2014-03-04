@@ -34,6 +34,26 @@ define(function(require) {
     }
 
     var testCases = [
+      // non-required
+      // --------------------------------------------------------------------
+      [ 'input:valid',
+        '<input name="non-required-0" />',
+        testRequiredValid,
+        'non-required-0'
+      ],
+      [ 'input[value=""]:valid',
+        '<input name="non-required-1" value="" />',
+        testRequiredValid,
+        'non-required-1'
+      ],
+      [ 'input[value="abc"]:valid',
+        '<input name="non-required-2" value="abc" />',
+        testRequiredValid,
+        'non-required-2'
+      ],
+
+      // required
+      // --------------------------------------------------------------------
       [ 'input[required][value=""]:invalid',
         '<input name="unknow0" value="" required />',
         testRequiredInvalid,
@@ -191,6 +211,73 @@ define(function(require) {
         '<button type="reset" name="button-reset-2" required></button>',
         testRequiredValid,
         'button-reset-2'
+      ],
+
+      [ 'select[required]:invalid',
+        '<select name="select-0" required></select>',
+        testRequiredInvalid,
+        'select-0'
+      ],
+      [ 'select[required]>option:invalid',
+        '<select name="select-1" required>'+
+          '<option></option>'+
+        '</select>',
+        testRequiredInvalid,
+        'select-1'
+      ],
+      [ 'select[required]>option[value=""][text=abc]:invalid',
+        '<select name="select-2" required>'+
+          '<option value="">abc</option>'+
+        '</select>',
+        testRequiredInvalid,
+        'select-2'
+      ],
+      [ 'select[required]>option[value=123][text=]:valid',
+        '<select name="select-3" required>'+
+          '<option value="123"></option>'+
+        '</select>',
+        testRequiredValid,
+        'select-3'
+      ],
+      [ 'select[required]>option[value=123][text=abc]:valid',
+        '<select name="select-4" required>'+
+          '<option value="123">abc</option>'+
+        '</select>',
+        testRequiredValid,
+        'select-4'
+      ],
+      // select>option[selected]
+      [ 'select[required]>option[selected]:invalid',
+        '<select name="select-10" required>'+
+          '<option value="123">abc</option>'+
+          '<option selected></option>'+
+        '</select>',
+        testRequiredInvalid,
+        'select-10'
+      ],
+      [ 'select[required]>option[selected]text=abc]:valid',
+        '<select name="select-11" required>'+
+          '<option value="123">abc</option>'+
+          '<option selected>abc</option>'+
+        '</select>',
+        testRequiredValid,
+        'select-11'
+      ],
+      [ 'select[required]>option[selected][value=""][text=abc]:invalid',
+        '<select name="select-12" required>'+
+          '<option value="123">abc</option>'+
+          '<option value="" selected>abc</option>'+
+        '</select>',
+        testRequiredInvalid,
+        'select-12'
+      ],
+      [ 'select[required]>option[selected][value=""][text=abc]:invalid',
+        '<select name="select-13" required>'+
+          '<option value="123">abc</option>'+
+          '<option value="" selected>abc</option>'+
+        '</select>',
+        testRequiredInvalid,
+        'select-13'
       ]
     ];
 
