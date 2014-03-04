@@ -305,6 +305,7 @@ define(function(require, exports, module){
         passedFields.push(field);
       }
       certified = certified && v;
+      context._EVT.trigger("complete", certified);
     }
     var _form = {
       element: form,
@@ -466,7 +467,9 @@ define(function(require, exports, module){
     case "radio":
       // XXX: ignore verifyed radio group.
       if(!this._cached_radio){this._cached_radio = {};}
-      if(this._cached_radio.hasOwnProperty(name)){return true;}
+      if(this._cached_radio.hasOwnProperty(name)){
+        return this._cached_radio[name];
+      }
       utils.each(getFormElementsByName(form, name), function(elem){
         if(utils.hasAttribute(elem, "required")){required = true;}
         if(elem.checked){checked = true;}

@@ -18,20 +18,21 @@ define(function(require) {
         expect(field.name).to.equal(data.name);
         done();
       });
-      webforms2.on("validate:valid", function(field){
-        expect(true).to.equal(false);
+      webforms2.on("validate:complete", function(certified){
+        expect(certified).to.equal(false);
         done();
       });
     }
 
     function testRequiredValid(webforms2, data, done){
       webforms2.on("validate:invalid", function(field){
+        //var name = field.name;
+        //expect(field.name).to.equal(data.name);
         expect(true).to.equal(false);
         done();
       });
-      webforms2.on("validate:valid", function(field){
-        var name = field.name;
-        expect(field.name).to.equal(data.name);
+      webforms2.on("validate:complete", function(certified){
+        expect(certified).to.equal(true);
         done();
       });
     }

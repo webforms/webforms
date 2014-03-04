@@ -47,6 +47,8 @@ define(function(require, exports, module) {
         me._evt.trigger("validate:invalid", field);
       }).on("valid", function(field){
         me._evt.trigger("validate:valid", field);
+      }).on("complete", function(certified){
+        me._evt.trigger("validate:complete", certified, me);
       });
       this.validate = function(){
         return _validator.validate.call(_validator);
