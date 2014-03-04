@@ -15,8 +15,7 @@ define(function(require) {
     function testRequiredInvalid(webforms2, data, done){
       webforms2.on("validate:invalid", function(field){
         expect(field.name).to.equal(data.name);
-      });
-      webforms2.on("validate:complete", function(certified){
+      }).on("validate:complete", function(certified){
         expect(certified).to.equal(false);
         webforms2.off();
         done();
@@ -26,8 +25,9 @@ define(function(require) {
     function testRequiredValid(webforms2, data, done){
       webforms2.on("validate:invalid", function(field){
         expect(true).to.equal(false);
-      });
-      webforms2.on("validate:complete", function(certified){
+      }).on("validate:valid", function(field){
+        expect(field.name).to.equal(data.name);
+      }).on("validate:complete", function(certified){
         expect(certified).to.equal(true);
         done();
       });
@@ -126,11 +126,72 @@ define(function(require) {
         testRequiredValid,
         'radio-3'
       ],
-      [ 'input[type=password][required][value="abc"]:vald',
-        '<input type="password" name="password2" value="abc" required />',
-        testRequiredValid,
-        'password2'
+
+      [ 'input[type=checkbox][required]:invalid',
+        '<input type="checkbox" name="checkbox-0" required />',
+        testRequiredInvalid,
+        'checkbox-0'
       ],
+      [ 'input[type=checkbox][required][checked]:vald',
+        '<input type="checkbox" name="checkbox-1" checked required />',
+        testRequiredValid,
+        'checkbox-1'
+      ],
+      [ 'input[type=checkbox][required][checked]*2:vald',
+        '<input type="checkbox" name="checkbox-2" checked required />'+
+        '<input type="checkbox" name="checkbox-2" />',
+        testRequiredValid,
+        'checkbox-2'
+      ],
+      [ 'input[type=checkbox][required][checked]*3:vald',
+        '<input type="checkbox" name="checkbox-3" />'+
+        '<input type="checkbox" name="checkbox-3" checked required />'+
+        '<input type="checkbox" name="checkbox-3" />',
+        testRequiredValid,
+        'checkbox-3'
+      ],
+
+      [ 'input[type=submit][required]:valid',
+        '<input type="submit" name="submit-0" required />',
+        testRequiredValid,
+        'submit-0'
+      ],
+      [ 'input[type=button][required]:valid',
+        '<input type="button" name="button-0" required />',
+        testRequiredValid,
+        'button-0'
+      ],
+      [ 'input[type=reset][required]:valid',
+        '<input type="reset" name="reset-0" required />',
+        testRequiredValid,
+        'reset-0'
+      ],
+      [ 'input[type=image][required]:valid',
+        '<input type="image" name="image-0" required />',
+        testRequiredValid,
+        'image-0'
+      ],
+
+      [ 'button[required]:valid',
+        '<button name="button-0" required></button>',
+        testRequiredValid,
+        'button-0'
+      ],
+      [ 'button[type=submit][required]:valid',
+        '<button type="submit" name="button-submit-1" required></button>',
+        testRequiredValid,
+        'button-submit-1'
+      ],
+      [ 'button[type=button][required]:valid',
+        '<button type="button" name="button-button-2" required></button>',
+        testRequiredValid,
+        'button-button-2'
+      ],
+      [ 'button[type=reset][required]:valid',
+        '<button type="reset" name="button-reset-2" required></button>',
+        testRequiredValid,
+        'button-reset-2'
+      ]
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
