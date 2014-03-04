@@ -14,7 +14,6 @@ define(function(require) {
 
     function testRequiredInvalid(webforms2, data, done){
       webforms2.on("validate:invalid", function(field){
-        var name = field.name;
         expect(field.name).to.equal(data.name);
       });
       webforms2.on("validate:complete", function(certified){

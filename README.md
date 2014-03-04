@@ -250,9 +250,9 @@ WebForms2 出现异常时触发 `error` 事件。
 
 ----
 
-### validated
+### complete
 
-整个表单校验完成后触发 validated 事件。
+整个表单校验完成后触发 complete 事件。
 
 注：针对整个表单的事件，参数上下文与单个表单项不同，如下：
 

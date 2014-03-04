@@ -305,8 +305,8 @@ define(function(require, exports, module){
         passedFields.push(field);
       }
       certified = certified && v;
-      context._EVT.trigger("complete", certified);
     }
+    // XXX: clear this.
     var _form = {
       element: form,
       action: form.getAttribute("action"),
@@ -316,7 +316,7 @@ define(function(require, exports, module){
       passed: certified
     };
 
-    context._EVT.trigger("validated", _form);
+    context._EVT.trigger("complete", certified);
     if(certified){context._EVT.trigger("submit", _form);}
     return certified;
   }
