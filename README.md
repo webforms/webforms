@@ -250,18 +250,17 @@ WebForms2 出现异常时触发 `error` 事件。
 
 ----
 
-### complete
+### validate:complete
 
 整个表单校验完成后触发 complete 事件。
 
 注：针对整个表单的事件，参数上下文与单个表单项不同，如下：
 
-* `form.element`: HTMLFormElement, 整个表单本身。
-* `form.action`: 表单的 action 属性。
-* `form.method`: 表单的 method 属性。
-* `form.passedFields`: Array<Field>, 所有通过校验的表单项列表。
-* `form.failedFields`: Array<Field>, 所有未通过校验的表单项列表。
-* `form.passed`: Boolean, 标识整个表单是否通过校验。
+```js
+webforms.on("validate:complete", function(certified){
+    console.log(certified ? "passed": "failed")
+});
+```
 
 ### submit
 
