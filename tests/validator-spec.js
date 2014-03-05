@@ -464,6 +464,18 @@ define(function(require) {
         testRequiredValid,
         'number-min-6'
       ],
+
+      [ 'input[type=file]:valid',
+        '<input type="file" name="file-0" />',
+        testRequiredValid,
+        'file-0'
+      ],
+      //! XXX: can not set value to file input element.
+      //[ 'input[type=file][value="/abc.png"]:valid',
+        //'<input type="file" name="file-1" value="/abc.png" />',
+        //testRequiredInvalid,
+        //'file-1'
+      //],
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
