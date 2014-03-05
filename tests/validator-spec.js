@@ -278,7 +278,40 @@ define(function(require) {
         '</select>',
         testRequiredInvalid,
         'select-13'
-      ]
+      ],
+
+      // minlength
+      [ 'input[type=text][minlength=3]:invalid',
+        '<input type="text" name="text-minlength-0" minlength="3" />',
+        testRequiredInvalid,
+        'text-minlength-0'
+      ],
+      [ 'input[type=text][minlength=3][value="12"]:invalid',
+        '<input type="text" name="text-minlength-1" minlength="3" value="12" />',
+        testRequiredInvalid,
+        'text-minlength-1'
+      ],
+      [ 'input[type=text][minlength=3][value="123"]:valid',
+        '<input type="text" name="text-minlength-2" minlength="3" value="123" />',
+        testRequiredValid,
+        'text-minlength-2'
+      ],
+
+      [ 'input[type=checkbox][minlength=3]:valid',
+        '<input type="checkbox" name="checkbox-minlength-0" minlength="3" />',
+        testRequiredValid,
+        'checkbox-minlength-0'
+      ],
+      [ 'input[type=checkbox][minlength=3][value="12"]:valid',
+        '<input type="checkbox" name="checkbox-minlength-1" minlength="3" value="12" />',
+        testRequiredValid,
+        'checkbox-minlength-1'
+      ],
+      [ 'input[type=checkbox][minlength=3][value="123"]:valid',
+        '<input type="text" name="text-minlength-2" minlength="3" value="123" />',
+        testRequiredValid,
+        'text-minlength-2'
+      ],
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
