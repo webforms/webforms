@@ -345,6 +345,89 @@ define(function(require) {
         testRequiredValid,
         'text-maxlength-2'
       ],
+
+      // [type=number] not required!
+      [ 'input[type=number]:valid',
+        '<input type="number" name="number-0" />',
+        testRequiredValid,
+        'number-0'
+      ],
+      // XXX: browser not allowed invalid value set into number input element.
+      //[ 'input[type=number][value=" "]:valid',
+        //'<input type="number" name="number-1" value=" " />',
+        //testRequiredInvalid,
+        //'number-1'
+      //],
+      //[ 'input[type=number][value=abc]:invalid',
+        //'<input type="number" name="number-2" value="abc" />',
+        //testRequiredInvalid,
+        //'number-2'
+      //],
+      //[ 'input[type=number][value=123abc]:invalid',
+        //'<input type="number" name="number-3" value="123abc" />',
+        //testRequiredInvalid,
+        //'number-3'
+      //],
+      [ 'input[type=number][value=1]:valid',
+        '<input type="number" name="number-4" value="1" />',
+        testRequiredValid,
+        'number-4'
+      ],
+      [ 'input[type=number][value=-1]:valid',
+        '<input type="number" name="number-5" value="-1" />',
+        testRequiredValid,
+        'number-5'
+      ],
+      [ 'input[type=number][value=+1]:valid',
+        '<input type="number" name="number-6" value="+1" />',
+        testRequiredValid,
+        'number-6'
+      ],
+      [ 'input[type=number][value=123]:valid',
+        '<input type="number" name="number-7" value="123" />',
+        testRequiredValid,
+        'number-7'
+      ],
+      [ 'input[type=number][value=-123]:valid',
+        '<input type="number" name="number-8" value="-123" />',
+        testRequiredValid,
+        'number-8'
+      ],
+      [ 'input[type=number][value=+123]:valid',
+        '<input type="number" name="number-9" value="+123" />',
+        testRequiredValid,
+        'number-9'
+      ],
+      [ 'input[type=number][value=1.23]:valid',
+        '<input type="number" name="number-10" value="1.23" />',
+        testRequiredValid,
+        'number-10'
+      ],
+      [ 'input[type=number][value=-1.23]:valid',
+        '<input type="number" name="number-11" value="-1.23" />',
+        testRequiredValid,
+        'number-11'
+      ],
+      [ 'input[type=number][value=+1.23]:valid',
+        '<input type="number" name="number-12" value="+1.23" />',
+        testRequiredValid,
+        'number-12'
+      ],
+      [ 'input[type=number][value=.23]:valid',
+        '<input type="number" name="number-13" value=".23" />',
+        testRequiredValid,
+        'number-13'
+      ],
+      [ 'input[type=number][value=-.23]:valid',
+        '<input type="number" name="number-14" value="-.23" />',
+        testRequiredValid,
+        'number-14'
+      ],
+      [ 'input[type=number][value=+.23]:valid',
+        '<input type="number" name="number-15" value="+.23" />',
+        testRequiredValid,
+        'number-15'
+      ]
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
