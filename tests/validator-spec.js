@@ -427,7 +427,43 @@ define(function(require) {
         '<input type="number" name="number-15" value="+.23" />',
         testRequiredValid,
         'number-15'
-      ]
+      ],
+
+      [ 'input[type=number][min=1][value=0]:invalid',
+        '<input type="number" name="number-min-0" min="1" value="0" />',
+        testRequiredInvalid,
+        'number-min-0'
+      ],
+      [ 'input[type=number][min=1][value=1]:valid',
+        '<input type="number" name="number-min-1" min="1" value="1" />',
+        testRequiredValid,
+        'number-min-1'
+      ],
+      [ 'input[type=number][min=0.1][value=0]:invalid',
+        '<input type="number" name="number-min-2" min="0.1" value="0" />',
+        testRequiredInvalid,
+        'number-min-2'
+      ],
+      [ 'input[type=number][min=0.1][value=0.1]:valid',
+        '<input type="number" name="number-min-3" min="0.1" value="0.1" />',
+        testRequiredValid,
+        'number-min-3'
+      ],
+      [ 'input[type=number][min=-1][value=-1.1]:invalid',
+        '<input type="number" name="number-min-4" min="-1" value="-1.1" />',
+        testRequiredInvalid,
+        'number-min-4'
+      ],
+      [ 'input[type=number][min=-1][value=-1]:valid',
+        '<input type="number" name="number-min-5" min="-1" value="-1" />',
+        testRequiredValid,
+        'number-min-5'
+      ],
+      [ 'input[type=number][min=-1][value=-0.9]:valid',
+        '<input type="number" name="number-min-6" min="-1" value="-0.9" />',
+        testRequiredValid,
+        'number-min-6'
+      ],
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
