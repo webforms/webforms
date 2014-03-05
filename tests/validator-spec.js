@@ -308,9 +308,42 @@ define(function(require) {
         'checkbox-minlength-1'
       ],
       [ 'input[type=checkbox][minlength=3][value="123"]:valid',
-        '<input type="text" name="text-minlength-2" minlength="3" value="123" />',
+        '<input type="checkbox" name="text-minlength-2" minlength="3" value="123" />',
         testRequiredValid,
         'text-minlength-2'
+      ],
+
+      // maxlength
+      [ 'input[type=text][maxlength=3]:invalid',
+        '<input type="text" name="text-maxlength-0" maxlength="3" />',
+        testRequiredValid,
+        'text-maxlength-0'
+      ],
+      [ 'input[type=text][maxlength=3][value="123"]:invalid',
+        '<input type="text" name="text-maxlength-1" maxlength="3" value="123" />',
+        testRequiredValid,
+        'text-maxlength-1'
+      ],
+      [ 'input[type=text][maxlength=3][value="1234"]:valid',
+        '<input type="text" name="text-maxlength-2" maxlength="3" value="1234" />',
+        testRequiredInvalid,
+        'text-maxlength-2'
+      ],
+
+      [ 'input[type=checkbox][maxlength=3]:valid',
+        '<input type="checkbox" name="checkbox-maxlength-0" maxlength="3" />',
+        testRequiredValid,
+        'checkbox-maxlength-0'
+      ],
+      [ 'input[type=checkbox][maxlength=3][value="123"]:valid',
+        '<input type="checkbox" name="checkbox-maxlength-1" maxlength="3" value="123" />',
+        testRequiredValid,
+        'checkbox-maxlength-1'
+      ],
+      [ 'input[type=checkbox][maxlength=3][value="1234"]:valid',
+        '<input type="checkbox" name="text-maxlength-2" maxlength="3" value="1234" />',
+        testRequiredValid,
+        'text-maxlength-2'
       ],
     ];
 
