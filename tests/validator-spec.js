@@ -476,6 +476,54 @@ define(function(require) {
         //testRequiredInvalid,
         //'file-1'
       //],
+
+      // TODO: test cases for date and times.
+      [ 'input[type=date]:valid',
+        '<input type="date" name="date-0" />',
+        testRequiredValid,
+        'date-0'
+      ],
+      [ 'input[type=date][value=""]:valid',
+        '<input type="date" name="date-1" value="" />',
+        testRequiredValid,
+        'date-1'
+      ],
+      [ 'input[type=date][value=" "]:valid',
+        '<input type="date" name="date-2" value=" " />',
+        testRequiredValid,
+        'date-2'
+      ],
+      [ 'input[type=date][value="20130101"]:invalid',
+        '<input type="date" name="date-3" value="20130101" />',
+        testRequiredInvalid,
+        'date-3'
+      ],
+      [ 'input[type=date][value="2013-01-01"]:valid',
+        '<input type="date" name="date-4" value="2013-01-01" />',
+        testRequiredValid,
+        'date-4'
+      ],
+      [ 'input[type=date][min=2013-01-02][value="2013-01-01"]:invalid',
+        '<input type="date" name="date-5" min="2013-01-02" value="2013-01-01" />',
+        testRequiredInvalid,
+        'date-5'
+      ],
+      [ 'input[type=date][min=2013-01-02][value="2013-01-02"]:valid',
+        '<input type="date" name="date-6" min="2013-01-02" value="2013-01-02" />',
+        testRequiredValid,
+        'date-6'
+      ],
+      [ 'input[type=date][max=2013-01-01][value="2013-01-01"]:valid',
+        '<input type="date" name="date-7" max="2013-01-01" value="2013-01-01" />',
+        testRequiredValid,
+        'date-7'
+      ],
+      [ 'input[type=date][max=2013-01-01][value="2013-01-02"]:invalid',
+        '<input type="date" name="date-8" max="2013-01-01" value="2013-01-02" />',
+        testRequiredInvalid,
+        'date-8'
+      ]
+
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){

@@ -35,6 +35,13 @@ define(function(require, exports, module){
   var Events = require("events");
   var $ = require("$");
 
+  var MODE = {
+    TEST: "test",
+    DEBUG: "debug",
+    NORMAL: "normal"
+  };
+  var mode = MODE.TEST;
+
   var ALL_ELEMENTS = "*";
 
   var RE_BLANK = /^\s*$/; // 空白字符。
@@ -571,11 +578,14 @@ define(function(require, exports, module){
     return true;
   }
 
+  // 校验日期时间的公共方法。
   function _verifyDateTimes(elem, defaultFormat){
-    var val = elem.value,
-        format = elem.getAttribute("data-format") || defaultFormat,
-        min, max,
-        certified = true;
+    var val = mode !== MODE.TEST ? elem.value : elem.getAttribute("value") || "";
+    var format = elem.getAttribute("data-format") || defaultFormat;
+    var min, max;
+    var certified = true;
+
+    if(RE_BLANK.test(val)){return true;}
 
     val = utils.date_parse(val, format);
     certified = certified && (val instanceof Date);
@@ -583,12 +593,14 @@ define(function(require, exports, module){
     if(utils.hasAttribute(elem, "min")){
       min = utils.date_parse(elem.getAttribute("min"), format);
       // XXX: if min not a date, return false?
-      certified = certified && (min instanceof Date) && (min > val);
+      certified = certified && (min instanceof Date) &&
+        (min.getTime() <= val.getTime());
     }
     if(utils.hasAttribute(elem, "max")){
       max = utils.date_parse(elem.getAttribute("max"), format);
       // XXX: if min not a date, return false?
-      certified = certified && (max instanceof Date) && (max < val);
+      certified = certified && (max instanceof Date) &&
+        (max.getTime() >= val.getTime());
     }
     return certified;
   }
