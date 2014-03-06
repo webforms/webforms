@@ -623,6 +623,87 @@ define(function(require) {
         'email-4'
       ],
 
+      [ 'input[type=url]:valid',
+        '<input type="url" name="url-0" />',
+        testRequiredValid,
+        'url-0'
+      ],
+      [ 'input[type=url][value=""]:valid',
+        '<input type="url" name="url-1" value="" />',
+        testRequiredValid,
+        'url-1'
+      ],
+      [ 'input[type=url][value=abc]:invalid',
+        '<input type="url" name="url-2" value="abc" />',
+        testRequiredInvalid,
+        'url-2'
+      ],
+      [ 'input[type=url][value=a://b.c]:invalid',
+        '<input type="url" name="url-3" value="a://b.c" />',
+        testRequiredInvalid,
+        'url-3'
+      ],
+      [ 'input[type=url][value=http://a.b.c]:valid',
+        '<input type="url" name="url-4" value="http://a.b.c" />',
+        testRequiredValid,
+        'url-4'
+      ],
+      [ 'input[type=url][value=http://a.b.c/]:valid',
+        '<input type="url" name="url-5" value="http://a.b.c/" />',
+        testRequiredValid,
+        'url-5'
+      ],
+      [ 'input[type=url][value=http://a.b.c/d]:valid',
+        '<input type="url" name="url-6" value="http://a.b.c/d" />',
+        testRequiredValid,
+        'url-6'
+      ],
+      [ 'input[type=url][value=http://a.b.c/d/e.f]:valid',
+        '<input type="url" name="url-7" value="http://a.b.c/d/e.f" />',
+        testRequiredValid,
+        'url-7'
+      ],
+      [ 'input[type=url][value=http://a.b.c/d/e.f?g=h]:valid',
+        '<input type="url" name="url-8" value="http://a.b.c/d/e.f?g=h" />',
+        testRequiredValid,
+        'url-8'
+      ],
+      [ 'input[type=url][value=http://a.b.c/d/e.f?g=h&ij=kl]:valid',
+        '<input type="url" name="url-9" value="http://a.b.c/d/e.f?g=h&ij=kl" />',
+        testRequiredValid,
+        'url-9'
+      ],
+      [ 'input[type=url][value=http://a-1.b.c/d/e.f?g=h&ij=kl#mn]:valid',
+        '<input type="url" name="url-10" value="http://a-1.b.c/d/e.f?g=h&ij=kl#mn" />',
+        testRequiredValid,
+        'url-10'
+      ],
+      [ 'input[type=url][value=http://a-1.b.c:8080/d/e.f?g=h&ij=kl#mn]:valid',
+        '<input type="url" name="url-11" value="http://a-1.b.c:8080/d/e.f?g=h&ij=kl#mn" />',
+        testRequiredValid,
+        'url-11'
+      ],
+      [ 'input[type=url][value=http://@a-1.b.c/d/e.f?g=h&ij=kl#mn]:valid',
+        '<input type="url" name="url-12" value="http://@a-1.b.c/d/e.f?g=h&ij=kl#mn" />',
+        testRequiredValid,
+        'url-12'
+      ],
+      [ 'input[type=url][value=http://user@a-1.b.c/d/e.f?g=h&ij=kl#mn]:valid',
+        '<input type="url" name="url-13" value="http://user@a-1.b.c/d/e.f?g=h&ij=kl#mn" />',
+        testRequiredValid,
+        'url-13'
+      ],
+      [ 'input[type=url][value=http://user:password@a-1.b.c/d/e.f?g=h&ij=kl#mn]:valid',
+        '<input type="url" name="url-14" value="http://user:password@a-1.b.c/d/e.f?g=h&ij=kl#mn" />',
+        testRequiredValid,
+        'url-14'
+      ],
+      [ 'input[type=url][value=https://a.b.c]:valid',
+        '<input type="url" name="url-15" value="https://a.b.c" />',
+        testRequiredValid,
+        'url-15'
+      ],
+
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){

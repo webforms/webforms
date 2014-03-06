@@ -56,7 +56,8 @@ define(function(require, exports, module){
     mobile: /^(?:13[0-9]|14[57]|15[0-35-9]|170|18[0-9])\d{8}$/,
     tel: /^\d{3,4}\-\d{7,8}$/,
     color: /^#[0-9a-fA-F]{6}$/,
-    url: /^https?:\/\/\w+(?:\.\w+)+(?:\/[\w_\.\-]*)*$/,
+    // [RFC1738](http://www.faqs.org/rfcs/rfc1738.html)
+    url: /^https?:\/\/(?:[\w.-]*(?::[^@]+)?@)?(?:[\w-]+\.){1,3}[\w]+(?::\d+)?(?:\/.*)?$/,
     number: new Ruler(verifyNumber),
     date: new Ruler(verifyDate),
     datetime: new Ruler(verifyDatetime),
@@ -645,7 +646,9 @@ define(function(require, exports, module){
   }
   // verify url.
   function verifyUrl(elem){
-    return BUILD_IN_RULES.url.test(elem.value);
+    var val = elem.value;
+    if(!val){return true;}
+    return BUILD_IN_RULES.url.test(val);
   }
 
   function verifyEmail(elem){
