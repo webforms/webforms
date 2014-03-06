@@ -640,6 +640,7 @@ define(function(require, exports, module){
   // @see http://technet.microsoft.com/zh-cn/library/cc728034(v=ws.10).aspx
   function verifyTel(elem){
     var val = elem.value;
+    if(!val){return true;}
     return BUILD_IN_RULES.mobile.test(val) || BUILD_IN_RULES.tel.test(val);
   }
   // verify url.
