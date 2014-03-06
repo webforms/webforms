@@ -55,7 +55,7 @@ define(function(require, exports, module){
     email: /^\w+(?:[\._\-]\w+)*@\w+(?:\.\w+)+$/,
     mobile: /^(?:13[0-9]|14[57]|15[0-35-9]|170|18[0-9])\d{8}$/,
     tel: /^\d{3,4}\-\d{7,8}$/,
-    color: /^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/,
+    color: /^#[0-9a-fA-F]{6}$/,
     url: /^https?:\/\/\w+(?:\.\w+)+(?:\/[\w_\.\-]*)*$/,
     number: new Ruler(verifyNumber),
     date: new Ruler(verifyDate),
@@ -655,7 +655,8 @@ define(function(require, exports, module){
   // verify color.
   // @see http://www.w3.org/pub/WWW/Graphics/Color/sRGB.html
   function verifyColor(elem){
-    var val = elem.value;
+    var val = mode === MODE.TEST ? elem.getAttribute("value") || "" : elem.value;
+    if(!val){return true;}
     return BUILD_IN_RULES.color.test(val);
   }
 

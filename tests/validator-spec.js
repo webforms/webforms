@@ -561,6 +561,41 @@ define(function(require) {
         'tel-6'
       ],
 
+      [ 'input[type=color]:valid',
+        '<input type="color" name="color-0" />',
+        testRequiredValid,
+        'color-0'
+      ],
+      [ 'input[type=color][value=""]:valid',
+        '<input type="color" name="color-1" value="" />',
+        testRequiredValid,
+        'color-1'
+      ],
+      [ 'input[type=color][value="abc"]:invalid',
+        '<input type="color" name="color-2" value="abc" />',
+        testRequiredInvalid,
+        'color-2'
+      ],
+      [ 'input[type=color][value="123"]:invalid',
+        '<input type="color" name="color-3" value="123" />',
+        testRequiredInvalid,
+        'color-3'
+      ],
+      [ 'input[type=color][value="#123"]:invalid',
+        '<input type="color" name="color-5" value="#123" />',
+        testRequiredInvalid,
+        'color-5'
+      ],
+      [ 'input[type=color][value="#123abc"]:valid',
+        '<input type="color" name="color-6" value="#123abc" />',
+        testRequiredValid,
+        'color-6'
+      ],
+      [ 'input[type=color][value="#123efg"]:invalid',
+        '<input type="color" name="color-6" value="#123efg" />',
+        testRequiredInvalid,
+        'color-6'
+      ],
 
     ];
 
