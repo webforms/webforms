@@ -477,7 +477,6 @@ define(function(require) {
         //'file-1'
       //],
 
-      // TODO: test cases for date and times.
       [ 'input[type=date]:valid',
         '<input type="date" name="date-0" />',
         testRequiredValid,
@@ -522,7 +521,46 @@ define(function(require) {
         '<input type="date" name="date-8" max="2013-01-01" value="2013-01-02" />',
         testRequiredInvalid,
         'date-8'
-      ]
+      ],
+
+      // TODO: test cases for date and times.
+
+      [ 'input[type=tel]:valid',
+        '<input type="tel" name="tel-0" />',
+        testRequiredValid,
+        'tel-0'
+      ],
+      [ 'input[type=tel][value=""]:valid',
+        '<input type="tel" name="tel-1" value="" />',
+        testRequiredValid,
+        'tel-1'
+      ],
+      [ 'input[type=tel][value="abc"]:invalid',
+        '<input type="tel" name="tel-2" value="abc" />',
+        testRequiredInvalid,
+        'tel-2'
+      ],
+      [ 'input[type=tel][value="13900000000"]:valid',
+        '<input type="tel" name="tel-3" value="13900000000" />',
+        testRequiredValid,
+        'tel-3'
+      ],
+      [ 'input[type=tel][value="12900000000"]:invalid',
+        '<input type="tel" name="tel-4" value="12900000000" />',
+        testRequiredInvalid,
+        'tel-4'
+      ],
+      [ 'input[type=tel][value="0792-0000000"]:valid',
+        '<input type="tel" name="tel-5" value="0792-0000000" />',
+        testRequiredValid,
+        'tel-5'
+      ],
+      [ 'input[type=tel][value="07920000000"]:invalid',
+        '<input type="tel" name="tel-6" value="07920000000" />',
+        testRequiredInvalid,
+        'tel-6'
+      ],
+
 
     ];
 
