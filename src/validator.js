@@ -649,7 +649,9 @@ define(function(require, exports, module){
   }
 
   function verifyEmail(elem){
-    return BUILD_IN_RULES.email.test(elem.value);
+    var val = elem.value;
+    if(!val){return true;}
+    return BUILD_IN_RULES.email.test(val);
   }
 
   // verify color.

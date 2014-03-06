@@ -597,6 +597,32 @@ define(function(require) {
         'color-6'
       ],
 
+      [ 'input[type=email]:valid',
+        '<input type="email" name="email-0" />',
+        testRequiredValid,
+        'email-0'
+      ],
+      [ 'input[type=email][value=""]:valid',
+        '<input type="email" name="email-1" value="" />',
+        testRequiredValid,
+        'email-1'
+      ],
+      [ 'input[type=email][value=abc]:invalid',
+        '<input type="email" name="email-2" value="abc" />',
+        testRequiredInvalid,
+        'email-2'
+      ],
+      [ 'input[type=email][value=a@bc]:invalid',
+        '<input type="email" name="email-3" value="a@bc" />',
+        testRequiredInvalid,
+        'email-3'
+      ],
+      [ 'input[type=email][value=a@b.c]:valid',
+        '<input type="email" name="email-4" value="a@b.c" />',
+        testRequiredValid,
+        'email-4'
+      ],
+
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
