@@ -4,6 +4,9 @@ define(function(require) {
   var $ = require('$');
   var expect = require('expect');
 
+  // XXX: browser not allowed invalid value set into number input element.
+  var mode = "test";
+
   function makeForm(html){
     var template_form_start = '<form id="form-required" style="display:none;">';
     var template_form_end = '</form>';
@@ -352,7 +355,6 @@ define(function(require) {
         testRequiredValid,
         'number-0'
       ],
-      // XXX: browser not allowed invalid value set into number input element.
       [ 'input[type=number][value=" "]:invalid',
         '<input type="number" name="number-1" value=" " />',
         testRequiredInvalid,

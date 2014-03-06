@@ -538,6 +538,7 @@ define(function(require, exports, module){
     }
     return true;
   }
+
   // XXX: Independent.
   var MIME_TYPE = {
     "text/plain": "txt",
@@ -547,16 +548,48 @@ define(function(require, exports, module){
     "audio/mp3": "mp3"
   };
   function verifyFile(elem){
-    var accept, val=elem.value;
+    var accepts;
+    var val = mode === MODE.TEST ? elem.getAttribute("value") || "" : elem.value;
+    var fileNames = [];
+
+    if("files" in elem && elem.files.length){
+      for(var i=0,file,l=elem.files.length; i<l; i++){
+        file = elem.files[i];
+        fileNames.push(file.name || file.fileName);
+      }
+    }else if(elem.value){
+      fileNames.push(elem.value);
+    }
+
     if(utils.hasAttribute(elem, "accept")){
-      accept = elem.getAttribute("accept").split(",");
-      for(var i=0,l=accept.length; i<l; i++){
-        if(MIME_TYPE.hasOwnProperty(accept[i]) &&
-            !utils.endsWith(val, accept[i])){
-          return false;
+
+      accepts = elem.getAttribute("accept").split(",");
+
+      var accept;
+      var ext;
+
+      for(var i=0,l=accepts.length; i<l; i++){
+
+        accept = accepts[i];
+
+        for(var j=0,m=fileNames.length; j<m; j++){
+
+          if(MIME_TYPE.hasOwnProperty(accept)){
+            ext = "." + MIME_TYPE[accept];
+          }else if(utils.startsWith(accept, ".")){
+            ext = accept;
+          }else{
+            return false;
+          }
+
+          if(!utils.endsWith(fileNames[j], ext)){
+            return false;
+          }
         }
       }
+
     }
+
     return true;
   }
 
