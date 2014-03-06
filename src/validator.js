@@ -567,12 +567,12 @@ define(function(require, exports, module){
     val = parseFloat(val, 10);
     if(utils.hasAttribute(elem, "min")){
       min = elem.getAttribute("min");
-      // XXX: if min not a positive number, return false?
+      // #12, if min not a positive number, return false?
       if(utils.isPositiveNumber(min) && val < parseFloat(min, 10)){return false;}
     }
     if(utils.hasAttribute(elem, "max")){
       max = elem.getAttribute("max");
-      // XXX: if min not a positive number, return false?
+      // #12, if min not a positive number, return false?
       if(utils.isPositiveNumber(max) && val > parseFloat(max, 10)){return false;}
     }
     return true;
@@ -592,13 +592,13 @@ define(function(require, exports, module){
 
     if(utils.hasAttribute(elem, "min")){
       min = utils.date_parse(elem.getAttribute("min"), format);
-      // XXX: if min not a date, return false?
+      // #12, if min not a date, return false?
       certified = certified && (min instanceof Date) &&
         (min.getTime() <= val.getTime());
     }
     if(utils.hasAttribute(elem, "max")){
       max = utils.date_parse(elem.getAttribute("max"), format);
-      // XXX: if min not a date, return false?
+      // #12, if min not a date, return false?
       certified = certified && (max instanceof Date) &&
         (max.getTime() >= val.getTime());
     }
