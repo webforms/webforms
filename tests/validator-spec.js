@@ -353,21 +353,21 @@ define(function(require) {
         'number-0'
       ],
       // XXX: browser not allowed invalid value set into number input element.
-      //[ 'input[type=number][value=" "]:valid',
-        //'<input type="number" name="number-1" value=" " />',
-        //testRequiredInvalid,
-        //'number-1'
-      //],
-      //[ 'input[type=number][value=abc]:invalid',
-        //'<input type="number" name="number-2" value="abc" />',
-        //testRequiredInvalid,
-        //'number-2'
-      //],
-      //[ 'input[type=number][value=123abc]:invalid',
-        //'<input type="number" name="number-3" value="123abc" />',
-        //testRequiredInvalid,
-        //'number-3'
-      //],
+      [ 'input[type=number][value=" "]:invalid',
+        '<input type="number" name="number-1" value=" " />',
+        testRequiredInvalid,
+        'number-1'
+      ],
+      [ 'input[type=number][value=abc]:invalid',
+        '<input type="number" name="number-2" value="abc" />',
+        testRequiredInvalid,
+        'number-2'
+      ],
+      [ 'input[type=number][value=123abc]:invalid',
+        '<input type="number" name="number-3" value="123abc" />',
+        testRequiredInvalid,
+        'number-3'
+      ],
       [ 'input[type=number][value=1]:valid',
         '<input type="number" name="number-4" value="1" />',
         testRequiredValid,

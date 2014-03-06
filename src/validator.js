@@ -560,9 +560,12 @@ define(function(require, exports, module){
     return true;
   }
 
-  // verify number type.
+  // verify number or range type.
   function verifyNumber(elem){
-    var val = elem.value, min, max;
+    var val = mode === MODE.TEST ? elem.getAttribute("value") || "" : elem.value;
+    var min, max;
+
+    if(!val){return true;}
     if(!utils.isNumber(val)){return false;}
 
     val = parseFloat(val, 10);
@@ -571,11 +574,13 @@ define(function(require, exports, module){
       // #12, if min not a positive number, return false?
       if(utils.isPositiveNumber(min) && val < parseFloat(min, 10)){return false;}
     }
+
     if(utils.hasAttribute(elem, "max")){
       max = elem.getAttribute("max");
       // #12, if min not a positive number, return false?
       if(utils.isPositiveNumber(max) && val > parseFloat(max, 10)){return false;}
     }
+
     return true;
   }
 

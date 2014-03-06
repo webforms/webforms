@@ -38,7 +38,7 @@ define(function(require, exports, module){
   function isNumber(num){
     if("number" === typeof num){return true;}
     if("string" !== typeof num){return false;}
-    if(/^[+-]?\d+$/.test(num) || /^[+-]?(?:\d+)?\.\d+$/){
+    if(/^[+-]?\d+$/.test(num) || /^[+-]?(?:\d+)?\.\d+$/.test(num)){
       return true;
     }
     return false;
