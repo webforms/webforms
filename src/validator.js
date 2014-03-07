@@ -474,6 +474,9 @@ define(function(require, exports, module){
     var required = utils.hasAttribute(elem, "required");
     var checked = false;
 
+    // http://www.w3.org/TR/html401/interact/forms.html#successful-controls
+    if(!name){return false;}
+
     switch(type){
     case "radio":
       if(!this._cached_radio){this._cached_radio = {};}

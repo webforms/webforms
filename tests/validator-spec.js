@@ -283,6 +283,28 @@ define(function(require) {
         'select-13'
       ],
 
+      // required but without name attribute.
+      [ 'without name input[type=text]:invalid',
+        '<input type="text" required />',
+        testRequiredInvalid,
+        null
+      ],
+      [ 'without name input[type=text][value=abc]:invalid',
+        '<input type="text" required value="abc" />',
+        testRequiredInvalid,
+        null
+      ],
+      [ 'input[type=text][name=""]:invalid',
+        '<input type="text" name="" required />',
+        testRequiredInvalid,
+        ''
+      ],
+      [ 'input[type=text][name=""][value=abc]:invalid',
+        '<input type="text" name="" required value="abc" />',
+        testRequiredInvalid,
+        ''
+      ],
+
       // minlength
       [ 'input[type=text][minlength=3]:invalid',
         '<input type="text" name="text-minlength-0" minlength="3" />',
