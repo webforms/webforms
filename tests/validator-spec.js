@@ -776,6 +776,57 @@ define(function(require) {
         //'pattern-8'
       //],
 
+
+    ];
+    var testCasesFunction = [
+      [ 'input!function-0:valid',
+        '<input name="func-0" />',
+        {
+          "func-0": function(){}
+        },
+        testRequiredValid,
+        'func-0'
+      ],
+      [ 'input!function-1:valid',
+        '<input name="func-1" />',
+        {
+          "func-1": function(){
+            return true;
+          }
+        },
+        testRequiredValid,
+        'func-1'
+      ],
+      [ 'input!function-2:invalid',
+        '<input name="func-2" />',
+        {
+          "func-2": function(){
+            return false;
+          }
+        },
+        testRequiredInvalid,
+        'func-2'
+      ],
+      [ 'input[value=""]!function-3:invalid',
+        '<input name="func-3" value="" />',
+        {
+          "func-3": function(field){
+            return field.value !== "";
+          }
+        },
+        testRequiredInvalid,
+        'func-3'
+      ],
+      [ 'input[value="abc"]!function-4:valid',
+        '<input name="func-4" value="abc" />',
+        {
+          "func-4": function(field){
+            return field.value !== "";
+          }
+        },
+        testRequiredValid,
+        'func-4'
+      ],
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){
@@ -802,6 +853,37 @@ define(function(require) {
         });
 
       })(desc, elements, handler, name);
+    }
+
+    for(var i=0,l=testCasesFunction.length; i<l; i++){
+
+      var desc = testCasesFunction[i][0];
+      var elements = testCasesFunction[i][1];
+      var func = testCasesFunction[i][2];
+      var handler = testCasesFunction[i][3];
+      var name = testCasesFunction[i][4];
+
+      (function(desc, elements, func, handler, name){
+
+        it(desc, function(done) {
+
+          var form = makeForm(elements);
+          var webforms2 = new WebForms2(form, {
+            validation: {
+              rules: func
+            }
+          });
+
+          handler(webforms2, {name: name}, done);
+
+          webforms2.validate();
+
+          webforms2.off();
+          form.remove();
+
+        });
+
+      })(desc, elements, func, handler, name);
     }
 
   });
