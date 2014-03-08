@@ -782,7 +782,9 @@ define(function(require) {
       [ 'input!function-0:valid',
         '<input name="func-0" />',
         {
-          "func-0": function(){}
+          "func-0": function(){
+            expect("do not call this!").to.equal(true);
+          }
         },
         testRequiredValid,
         'func-0'
@@ -791,43 +793,116 @@ define(function(require) {
         '<input name="func-1" />',
         {
           "func-1": function(){
+            expect("do not call this!").to.equal(true);
             return true;
           }
         },
         testRequiredValid,
         'func-1'
       ],
-      [ 'input!function-2:invalid',
+      [ 'input!function-2:valid',
         '<input name="func-2" />',
         {
-          "func-2": function(){
+          "func-2": function(field){
+            expect("do not call this!").to.equal(true);
             return false;
           }
         },
-        testRequiredInvalid,
+        testRequiredValid,
         'func-2'
       ],
-      [ 'input[value=""]!function-3:invalid',
+      [ 'input[value=""]!function-3:valid',
         '<input name="func-3" value="" />',
         {
           "func-3": function(field){
+            expect("do not call this!").to.equal(true);
             return field.value !== "";
           }
         },
-        testRequiredInvalid,
+        testRequiredValid,
         'func-3'
       ],
       [ 'input[value="abc"]!function-4:valid',
         '<input name="func-4" value="abc" />',
         {
           "func-4": function(field){
-            return field.value !== "";
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-4");
+            expect(field.type).to.equal("text");
+            return true;
           }
         },
         testRequiredValid,
         'func-4'
       ],
+      [ 'input[value="abc"]!function-5:invalid',
+        '<input name="func-5" value="abc" />',
+        {
+          "func-5": function(field){
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-5");
+            expect(field.type).to.equal("text");
+            return false;
+          }
+        },
+        testRequiredInvalid,
+        'func-5'
+      ],
+      [ 'input[value="abc"]!function-6:valid',
+        '<input name="func-6" value="abc" />',
+        {
+          "func-6": function(field){
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-6");
+            expect(field.type).to.equal("text");
+            return true;
+          }
+        },
+        testRequiredValid,
+        'func-6'
+      ],
+      [ 'input[id=id-func-7][value=""]!function-7:valid',
+        '<input name="func-7" id="func-7" value="" />',
+        {
+          "#func-7": function(field){
+            expect("do not call this!").to.equal(true);
+            return false;
+          }
+        },
+        testRequiredValid,
+        'func-7'
+      ],
+      [ 'input[id=id-func-8][value="abc"]!function-8:invalid',
+        '<input name="func-8" id="id-func-8" value="abc" />',
+        {
+          "#id-func-8": function(field){
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-8");
+            expect(field.id).to.equal("id-func-8");
+            expect(field.type).to.equal("text");
+            return false;
+          }
+        },
+        testRequiredInvalid,
+        'func-8'
+      ],
+      [ 'input[id=id-func-9][value="abc"]!function-9:valid',
+        '<input name="func-9" id="id-func-9" value="abc" />',
+        {
+          "#id-func-9": function(field){
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-9");
+            expect(field.id).to.equal("id-func-9");
+            expect(field.type).to.equal("text");
+            return true;
+          }
+        },
+        testRequiredValid,
+        'func-9'
+      ],
     ];
+
+
 
     for(var i=0,l=testCases.length; i<l; i++){
 

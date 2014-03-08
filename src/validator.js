@@ -729,6 +729,8 @@ define(function(require, exports, module){
   function verifyFunction(field, rule, context){
     var elem = field.element;
 
+    if(RE_BLANK.test(elem.value)){return true;}
+
     // @param {Boolean} state, verify state for async callback.
     var certified = rule.call(context, field, function(state){
       if(!utils.hasAttribute(elem, "verified")){return;}
