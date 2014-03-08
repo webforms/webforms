@@ -744,9 +744,9 @@ define(function(require) {
         testRequiredValid,
         'pattern-2'
       ],
-      [ 'input[pattern="abc"]:invalid',
+      [ 'input[pattern="abc"]:valid',
         '<input name="pattern-3" pattern="abc" />',
-        testRequiredInvalid,
+        testRequiredValid,
         'pattern-3'
       ],
       [ 'input[pattern="abc"][value=ab]:invalid',

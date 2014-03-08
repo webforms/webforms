@@ -712,6 +712,9 @@ define(function(require, exports, module){
   // XXX: debug 模式下，可以自动发现模式不正确的问题。
   function verifyPattern(elem){
     var pattern = elem.getAttribute("pattern");
+    var value = elem.value;
+    if(!value || !pattern){return true;}
+
     try{pattern = new RegExp(pattern);}catch(ex){
       // for form developer debug.
       alert("Invalid pattern: "+pattern+"\n"+ex.message);
