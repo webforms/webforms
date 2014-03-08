@@ -55,6 +55,29 @@ define(function(require) {
         'non-required-2'
       ],
 
+      // required but without name attribute.
+      // --------------------------------------------------------------------
+      [ 'without name input[type=text]:invalid',
+        '<input type="text" required />',
+        testRequiredInvalid,
+        null
+      ],
+      [ 'without name input[type=text][value=abc]:invalid',
+        '<input type="text" required value="abc" />',
+        testRequiredInvalid,
+        null
+      ],
+      [ 'input[type=text][name=""]:invalid',
+        '<input type="text" name="" required />',
+        testRequiredInvalid,
+        ''
+      ],
+      [ 'input[type=text][name=""][value=abc]:invalid',
+        '<input type="text" name="" required value="abc" />',
+        testRequiredInvalid,
+        ''
+      ],
+
       // required
       // --------------------------------------------------------------------
       [ 'input[required][value=""]:invalid',
@@ -281,28 +304,6 @@ define(function(require) {
         '</select>',
         testRequiredInvalid,
         'select-13'
-      ],
-
-      // required but without name attribute.
-      [ 'without name input[type=text]:invalid',
-        '<input type="text" required />',
-        testRequiredInvalid,
-        null
-      ],
-      [ 'without name input[type=text][value=abc]:invalid',
-        '<input type="text" required value="abc" />',
-        testRequiredInvalid,
-        null
-      ],
-      [ 'input[type=text][name=""]:invalid',
-        '<input type="text" name="" required />',
-        testRequiredInvalid,
-        ''
-      ],
-      [ 'input[type=text][name=""][value=abc]:invalid',
-        '<input type="text" name="" required value="abc" />',
-        testRequiredInvalid,
-        ''
       ],
 
       // minlength
