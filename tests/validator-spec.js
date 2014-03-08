@@ -729,6 +729,53 @@ define(function(require) {
         'url-15'
       ],
 
+      [ 'input[pattern]:valid',
+        '<input name="pattern-0" pattern />',
+        testRequiredValid,
+        'pattern-0'
+      ],
+      [ 'input[pattern]:valid',
+        '<input name="pattern-1" pattern />',
+        testRequiredValid,
+        'pattern-1'
+      ],
+      [ 'input[pattern=""]:valid',
+        '<input name="pattern-2" pattern="" />',
+        testRequiredValid,
+        'pattern-2'
+      ],
+      [ 'input[pattern="abc"]:invalid',
+        '<input name="pattern-3" pattern="abc" />',
+        testRequiredInvalid,
+        'pattern-3'
+      ],
+      [ 'input[pattern="abc"][value=ab]:invalid',
+        '<input name="pattern-4" pattern="abc" value="ab" />',
+        testRequiredInvalid,
+        'pattern-4'
+      ],
+      [ 'input[pattern="abc"][value=abc]:valid',
+        '<input name="pattern-5" pattern="abc" value="abc" />',
+        testRequiredValid,
+        'pattern-5'
+      ],
+      [ 'input[pattern="abc"][value=123abcdef]:valid',
+        '<input name="pattern-6" pattern="abc" value="123abcdef" />',
+        testRequiredValid,
+        'pattern-6'
+      ],
+      [ 'input[pattern="abc$"][value=123abcdef]:invalid',
+        '<input name="pattern-7" pattern="abc$" value="123abcdef" />',
+        testRequiredInvalid,
+        'pattern-7'
+      ],
+      // TODO: [type=file][multiple]
+      //[ 'input[type=file][multiple][pattern=".png$"][value=123abcdef]:invalid',
+        //'<input type="file" multiple name="pattern-8" pattern="\.png$" value="123abcdef" />',
+        //testRequiredInvalid,
+        //'pattern-8'
+      //],
+
     ];
 
     for(var i=0,l=testCases.length; i<l; i++){

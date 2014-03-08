@@ -2,7 +2,8 @@
  * Web Forms 2 Validate.
  * @param {HTMLFormElement} form.
  * @param {Object} options.
- * @see http://dev.w3.org/html5/markup/input.html
+ * @see http://www.w3.org/TR/html5/forms.html
+ *      http://dev.w3.org/html5/markup/input.html
  *      https://wiki.mozilla.org/DOM:Web_Forms_2.0
  *      http://miketaylr.com/pres/html5/forms2.html
  *      http://webforms2.testsuite.org/
