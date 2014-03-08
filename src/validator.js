@@ -475,6 +475,7 @@ define(function(require, exports, module){
     var checked = false;
 
     // http://www.w3.org/TR/html401/interact/forms.html#successful-controls
+    // successful-controls 必须包含名字。
     if(!name){return false;}
 
     switch(type){
