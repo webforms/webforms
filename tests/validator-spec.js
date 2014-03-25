@@ -31,6 +31,7 @@ define(function(require) {
       }).on("validate:valid", function(field){
         expect(field.name).to.equal(data.name);
       }).on("validate:complete", function(certified){
+        console.log("validate:complete", certified, true)
         expect(certified).to.equal(true);
         done();
       });
@@ -899,6 +900,30 @@ define(function(require) {
         },
         testRequiredValid,
         'func-9'
+      ],
+
+      // async validation.
+      [ 'input[value="abc"]!function-async-0:valid',
+        '<input name="func-async-0" verified value="abc" />',
+        {
+          "func-async-0": function(field, callback){
+            expect(field.value).to.equal("abc");
+            expect(field.name).to.equal("func-async-0");
+            expect(field.type).to.equal("text");
+            $.ajax({
+              url: "./good.json",
+              dataType: "json",
+              success: function(data){
+                callback(data.state === "ok");
+              },
+              error: function(err){
+                callback(false);
+              }
+            });
+          }
+        },
+        testRequiredValid,
+        'func-async-0'
       ],
     ];
 

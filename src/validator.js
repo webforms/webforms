@@ -294,6 +294,7 @@ define(function(require, exports, module){
     var failedFields = []; // 未通过校验的字段。
     // XXX: cache verified radio button.
     //var groupElemCatch = {};
+    context._async_validation = 0;
 
     for(var i=0,elem,v,l=form.elements.length; i<l; i++){
       elem = form.elements[i];
@@ -328,7 +329,9 @@ define(function(require, exports, module){
       passed: certified
     };
 
-    context._EVT.trigger("complete", certified);
+    if(context._async_validation === 0){
+      context._EVT.trigger("complete", certified);
+    }
     if(certified){context._EVT.trigger("submit", _form);}
     return certified;
   }
@@ -449,6 +452,7 @@ define(function(require, exports, module){
     if(utils.hasAttribute(elem, "verified")){
       certified = certified && "valid" === elem.getAttribute("verified");
     }
+    console.log("verified", certified)
 
     context._EVT.trigger(certified ? "valid": "invalid", field);
     return certified;
@@ -735,10 +739,20 @@ define(function(require, exports, module){
     if(RE_BLANK.test(elem.value)){return true;}
 
     // @param {Boolean} state, verify state for async callback.
+    if(utils.hasAttribute(elem, "verified")){
+      context._async_validation++;
+    }
     var certified = rule.call(context, field, function(state){
       if(!utils.hasAttribute(elem, "verified")){return;}
       elem.setAttribute("verified", state ? "valid" : "invalid");
       context._EVT.trigger(state ? "valid" : "invalid", field);
+
+      context._async_validation--;
+      if(context._async_validation === 0){
+        // XXX: state is not the last state.
+        console.log("complete", state)
+        context._EVT.trigger("complete", state);
+      }
     });
     // 异步校验的函数可以省略返回。
     return typeof certified === "undefined" ? true : !!certified;
