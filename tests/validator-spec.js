@@ -1,6 +1,6 @@
 define(function(require) {
 
-  var WebForms2 = require('webforms2');
+  var WebForms = require('webforms');
   var $ = require('$');
   var expect = require('expect');
 
@@ -15,18 +15,18 @@ define(function(require) {
 
   describe('validator', function() {
 
-    function testRequiredInvalid(webforms2, data, done){
-      webforms2.on("validate:invalid", function(field){
+    function testRequiredInvalid(webforms, data, done){
+      webforms.on("validate:invalid", function(field){
         expect(field.name).to.equal(data.name);
       }).on("validate:complete", function(certified){
         expect(certified).to.equal(false);
-        webforms2.off();
+        webforms.off();
         done();
       });
     }
 
-    function testRequiredValid(webforms2, data, done){
-      webforms2.on("validate:invalid", function(field){
+    function testRequiredValid(webforms, data, done){
+      webforms.on("validate:invalid", function(field){
         expect(true).to.equal(false);
       }).on("validate:valid", function(field){
         expect(field.name).to.equal(data.name);
@@ -941,13 +941,13 @@ define(function(require) {
         it(desc, function(done) {
 
           var form = makeForm(elements);
-          var webforms2 = new WebForms2(form);
+          var webforms = new WebForms(form);
 
-          handler(webforms2, {name: name}, done);
+          handler(webforms, {name: name}, done);
 
-          webforms2.validate();
+          webforms.validate();
 
-          webforms2.off();
+          webforms.off();
           form.remove();
 
         });
@@ -968,17 +968,17 @@ define(function(require) {
         it(desc, function(done) {
 
           var form = makeForm(elements);
-          var webforms2 = new WebForms2(form, {
+          var webforms = new WebForms(form, {
             validation: {
               rules: func
             }
           });
 
-          handler(webforms2, {name: name}, done);
+          handler(webforms, {name: name}, done);
 
-          webforms2.validate();
+          webforms.validate();
 
-          webforms2.off();
+          webforms.off();
           form.remove();
 
         });

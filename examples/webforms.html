@@ -13,8 +13,8 @@
   .help-inline b{color:#f00; font-weight:bold; padding:2px 5px;}
 </style>
 <script type="text/javascript" src="utils.js" charset="utf-8"></script>
-<script type="text/javascript" src="webforms2.js" charset="utf-8"></script>
-<title>WebForms2</title>
+<script type="text/javascript" src="webforms.js" charset="utf-8"></script>
+<title>WebForms</title>
 </head>
 <body>
 <form class="form-horizontal" id="form-required">
@@ -92,7 +92,7 @@
   </fieldset>
 </form>
 
-  <form action="webforms2.html" method="get" accept-charset="utf-8" id="f">
+  <form action="webforms.html" method="get" accept-charset="utf-8" id="f">
 
     required: <input type="text" name="required" value="" required error-message="必填项" /><br/>
     date start: <input type="date" name="datestart" id="datestart" value="" required data-format="YYYY/MM/DD" error-message="请输入合法的日期" /><br/>
@@ -111,7 +111,7 @@
 
 <script type="text/javascript">/*<![CDATA[*/
   function $(id){return document.getElementById(id);}
-  new WebForms2($("form-required"), {
+  new WebForms($("form-required"), {
     rules: {
       "checkbox-group-required": function(elem){
         var form = elem.form,
@@ -129,7 +129,7 @@
     }
   });
 
-  new WebForms2(document.getElementById("f"),{
+  new WebForms(document.getElementById("f"),{
     rules: {
       "datestart": function(elem){
         var now = new Date(),

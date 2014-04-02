@@ -13,8 +13,8 @@
   .help-inline b{color:#f00; font-weight:bold; padding:2px 5px;}
 </style>
 <script type="text/javascript" src="utils.js" charset="utf-8"></script>
-<script type="text/javascript" src="webforms2.js" charset="utf-8"></script>
-<title>Webforms2 required test</title>
+<script type="text/javascript" src="webforms.js" charset="utf-8"></script>
+<title>Webforms required test</title>
 </head>
 <body>
 
@@ -34,7 +34,7 @@
   }
 
   function $(id){return document.getElementById(id);}
-  new WebForms2($("form-text-required"), {
+  new WebForms($("form-text-required"), {
     feedback: function(elem){
       var msg = elem.getAttribute("error-message"),
         err = get_nextsibling(elem);
@@ -54,7 +54,7 @@
   <button type="submit" class="btn">Submit</button>
 </form>
 <script type="text/javascript">/*<![CDATA[*/
-  new WebForms2($("form-password-required"), {
+  new WebForms($("form-password-required"), {
     feedback: function(elem){
       var msg = elem.getAttribute("error-message"),
         err = get_nextsibling(elem);
@@ -111,7 +111,7 @@
   <button type="submit" class="btn">Submit</button>
 </form>
 <script type="text/javascript">/*<![CDATA[*/
-  new WebForms2($("form-radio-group-required"), {
+  new WebForms($("form-radio-group-required"), {
     feedback: function(elem){
       var msg = elem.getAttribute("error-message"),
         err = get_nextsibling(elem);
@@ -127,7 +127,7 @@
   <button type="submit" class="btn">Submit</button>
 </form>
 <script type="text/javascript">/*<![CDATA[*/
-  new WebForms2($("form-email-required"), {
+  new WebForms($("form-email-required"), {
     feedback: function(elem){
       var msg = elem.getAttribute("error-message"),
         err = get_nextsibling(elem);

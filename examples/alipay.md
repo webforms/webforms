@@ -69,9 +69,9 @@
 </div>
 
 ````js
-seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
+seajs.use(['$', 'webforms', 'validator'], function($, WebForms, Validator){
     var form = document.getElementById("test-form");
-    var regForm = new WebForms2("test-form", {
+    var regForm = new WebForms("test-form", {
         validator: {
             rules: {
                 "password-confirmation": function(field){

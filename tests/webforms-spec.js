@@ -1,8 +1,8 @@
 define(function(require) {
 
-  var webforms2 = require('../src/webforms2');
+  var webforms = require('webforms');
 
-  describe('webforms2', function() {
+  describe('webforms', function() {
 
     it('normal usage', function() {
 

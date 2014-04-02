@@ -216,7 +216,7 @@
 </form>
 
 ````js
-seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
+seajs.use(['$', 'webforms', 'validator'], function($, WebForms, Validator){
     var form = document.getElementById("J-index-form");
     var regForm = new Validator(form, {
         autoFocus: false,

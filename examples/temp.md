@@ -69,7 +69,7 @@
 ````
 
 ````javascript
-seajs.use(['webforms2', 'validator'], function(WebForms2, validator){
+seajs.use(['webforms', 'validator'], function(WebForms, validator){
     var form = document.getElementById("loginForm");
     var loginForm = new validator(form, {
         rules: {

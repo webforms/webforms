@@ -51,7 +51,7 @@
 
 
 ````js
-seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
+seajs.use(['$', 'webforms', 'validator'], function($, WebForms, Validator){
     // 表单提示消息区。
     function messager(elem){
         return $(elem).parent().children(".help-inline");

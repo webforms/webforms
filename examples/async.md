@@ -36,7 +36,7 @@
 
 
 <script type="text/javascript">
-seajs.use(['$', 'webforms2', 'validator'], function($, WebForms2, Validator){
+seajs.use(['$', 'webforms', 'validator'], function($, WebForms, Validator){
     var form = document.getElementById("form-login");
     var loginForm = new Validator(form, {
         trigger: "blur,keyup",

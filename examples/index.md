@@ -42,10 +42,10 @@
 ----
 
 ````js
-seajs.use(['$', 'webforms2', 'validator-feedback-bootstrap'],
-  function($, WebForms2, Feedback){
+seajs.use(['$', 'webforms', 'validator-feedback-bootstrap'],
+  function($, WebForms, Feedback){
 
-    var loginForm = new WebForms2("#form-login", {
+    var loginForm = new WebForms("#form-login", {
         validation: {
             rules: {
                 "username": function(field){
