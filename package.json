@@ -1,18 +1,18 @@
 {
   "family": "hotoo",
-  "name": "webforms2",
+  "name": "webforms",
   "version": "0.1.0",
-  "description": "WebForms2",
-  "homepage": "https://github.com/hotoo/webforms2",
+  "description": "WebForms",
+  "homepage": "https://github.com/hotoo/webforms",
   "author": "闲耘<hotoo.cn[AT]gmail.com>",
-  "repository": "https://github.com/hotoo/webforms2.git",
+  "repository": "https://github.com/hotoo/webforms.git",
   "bugs": {
-    "url": "https://github.com/hotoo/webforms2/issues"
+    "url": "https://github.com/hotoo/webforms/issues"
   },
   "keywords": ["widget"],
   "licenses": "MIT",
   "spm": {
-    "output": ["webforms2.js"],
+    "output": ["webforms.js"],
     "alias": {
       "$": "$",
       "events": "arale/events/1.1.0/events"

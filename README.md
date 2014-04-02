@@ -1,10 +1,10 @@
 
-# WebForms2
+# WebForms
 
 ---
 
-[![Build Status](https://travis-ci.org/hotoo/webforms2.png)](https://travis-ci.org/hotoo/webforms2)
-[![Coverage Status](https://coveralls.io/repos/hotoo/webforms2/badge.png?branch=master)](https://coveralls.io/r/hotoo/webforms2)
+[![Build Status](https://travis-ci.org/hotoo/webforms.png)](https://travis-ci.org/hotoo/webforms)
+[![Coverage Status](https://coveralls.io/repos/hotoo/webforms/badge.png?branch=master)](https://coveralls.io/r/hotoo/webforms)
 
 
 语义化 Web 表单，提供体系完整、灵活高效、高度一致的 Web 表单方案。
@@ -31,7 +31,7 @@
 ```
 
 ```javascript
-var loginForm = new WebForms2(form, {
+var loginForm = new WebForms(form, {
   rules: {
     "username": function(field){
       return this.RULES.email.test(field.value) ||
@@ -40,19 +40,19 @@ var loginForm = new WebForms2(form, {
   }
 })
 ```
-WebForms2 的构造函数中，参数列表如下：
+WebForms 的构造函数中，参数列表如下：
 
 1. 第一个参数是用于指定表单。
     * 可以是表单的 ID。（可选添加 `#` 前缀）
 
         ```js
-        new WebForms2("formId");
-        new WebForms2("#formId");
+        new WebForms("formId");
+        new WebForms("#formId");
         ```
     * 或者是 HTMLFormElement 元素。
 
         ```js
-        new WebForms2(document.getElementById("formId"));
+        new WebForms(document.getElementById("formId"));
         ```
 2. 第二个参数用于指定表单的各个可选选项，该参数本身可选。
     * rules: Object, 自定义的表单项校验函数。
@@ -172,7 +172,7 @@ accept 属性支持 MIME-TYPE 和后缀设定。更多参考：
 遍历整个表单的所有表单项。
 
 ```js
-new WebForms2("#formId").each(function(field){
+new WebForms("#formId").each(function(field){
   switch(field.name){
   case "username":
     this.RULE.email.test(field.value);
@@ -188,9 +188,9 @@ new WebForms2("#formId").each(function(field){
 
 ## Events
 
-WebForms2 提供了完整的事件模型，通过监听各种事件就可以几乎所有的表单交互动作。
+WebForms 提供了完整的事件模型，通过监听各种事件就可以几乎所有的表单交互动作。
 
-* 通过 WebForms2 的实例的 on 方法即可绑定事件监听。
+* 通过 WebForms 的实例的 on 方法即可绑定事件监听。
 * on 方法的处理函数 handler 中，提供了对应表单项的常用信息，包括：
   * `field.name`: 表单项名称，即对应的 name 属性，如果没有 name 属性则为 `null`。
   * `field.id`: 表单项 ID，即对应的 ID 属性，如果没有 ID 则为 `null`。
@@ -204,10 +204,10 @@ WebForms2 提供了完整的事件模型，通过监听各种事件就可以几�
 单个表单项通过校验时触发 `valid` 事件。
 
 ```js
-var WebForms2 = require("WebForms2");
+var WebForms = require("WebForms");
 
-var webforms2 = new WebForms2("#formId");
-webforms2.on("valid", function(field){
+var webforms = new WebForms("#formId");
+webforms.on("valid", function(field){
   switch(field.name){
   case "username":
     //...
@@ -242,7 +242,7 @@ webforms2.on("valid", function(field){
 
 ### error
 
-WebForms2 出现异常时触发 `error` 事件。
+WebForms 出现异常时触发 `error` 事件。
 
 常见异常包括：
 
@@ -270,7 +270,7 @@ webforms.on("validate:complete", function(certified){
 希望使用异步方式提交表单时可以使用这种方式。
 
 ```js
-webforms2.on("submit", function(form){
+webforms.on("submit", function(form){
   jQuery.ajax({
     url: form.action,
     data: form.queryString(),
