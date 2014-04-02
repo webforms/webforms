@@ -94,7 +94,11 @@ define(function(require, exports, module){
     var ME = this;
     this.form.onsubmit = function(){
       if("function" === typeof _submit && !_submit.call(this)){return false;}
-      return verifyForm(this, options, ME);
+      var certified = verifyForm(this, options, ME);
+      if(certified){
+        context._EVT.trigger("submit", _form);
+      }
+      return certified;
     };
 
     if(options.hasOwnProperty("feedback")){
@@ -332,7 +336,6 @@ define(function(require, exports, module){
     if(context._async_validation === 0){
       context._EVT.trigger("complete", certified);
     }
-    if(certified){context._EVT.trigger("submit", _form);}
     return certified;
   }
 
@@ -452,7 +455,7 @@ define(function(require, exports, module){
     if(utils.hasAttribute(elem, "verified")){
       certified = certified && "valid" === elem.getAttribute("verified");
     }
-    console.log("verified", certified)
+    //console.log("verified", certified)
 
     context._EVT.trigger(certified ? "valid": "invalid", field);
     return certified;
@@ -750,7 +753,6 @@ define(function(require, exports, module){
       context._async_validation--;
       if(context._async_validation === 0){
         // XXX: state is not the last state.
-        console.log("complete", state)
         context._EVT.trigger("complete", state);
       }
     });
