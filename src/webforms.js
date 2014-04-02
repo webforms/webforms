@@ -16,7 +16,7 @@ define(function(require, exports, module) {
   // 构造函数。
   // @param {HTMLFormElement,String} form, 表单对象。
   // @param {Object} options.
-  var WebForms2 = function(form, options){
+  var WebForms = function(form, options){
 
     if("string" === typeof form){
       form = document.getElementById(form.replace(RE_ID_SELECTOR, ""));
@@ -58,12 +58,12 @@ define(function(require, exports, module) {
 
   };
 
-  WebForms2.prototype = {
+  WebForms.prototype = {
 
     // 自定义事件绑定。
     // @param {String} eventName, 事件名称。
     // @param {Function} handler, 事件处理函数。
-    // @return {WebForms2}
+    // @return {WebForms}
     on: function(eventName, handler){
       this._evt.on(eventName, handler, this);
       return this;
@@ -72,7 +72,7 @@ define(function(require, exports, module) {
     // 取消事件绑定。
     // @param {String} eventName, 可选，事件名称。
     // @param {Function} handler, 可选，事件处理函数。
-    // @return {WebForms2}
+    // @return {WebForms}
     off: function(eventName, handler){
       this._evt.off(eventName, handler, this);
       return this;
@@ -177,5 +177,5 @@ define(function(require, exports, module) {
 
   };
 
-  module.exports = WebForms2;
+  module.exports = WebForms;
 });
