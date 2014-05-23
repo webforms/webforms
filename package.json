@@ -1,23 +1,22 @@
 {
-  "family": "hotoo",
-  "name": "webforms",
+  "name": "webforms.validator",
   "version": "0.1.0",
-  "description": "WebForms",
-  "homepage": "https://github.com/hotoo/webforms",
+  "description": "WebForms Validator.",
+  "homepage": "https://github.com/webforms/validator",
   "author": "闲耘<hotoo.cn[AT]gmail.com>",
-  "repository": "https://github.com/hotoo/webforms.git",
+  "repository": "https://github.com/webforms/validator.git",
   "bugs": {
-    "url": "https://github.com/hotoo/webforms/issues"
+    "url": "https://github.com/webforms/validator/issues"
   },
-  "keywords": ["widget"],
-  "licenses": "MIT",
+  "keywords": ["widget", "form", "forms", "webform", "webforms"],
   "spm": {
-    "output": ["webforms.js"],
-    "alias": {
-      "$": "$",
-      "events": "arale/events/1.1.0/events"
+    "main": "validator.js",
+    "dependencies": {
+      "arale-events": "1.2.0"
     },
-    "devAlias": {},
-    "engines": {}
-  }
+    "devDependencies": {
+      "jquery": "1.7.2"
+    }
+  },
+  "licenses": "MIT"
 }

@@ -1,10 +1,11 @@
 
-# WebForms
+# WebForms:Validator
 
 ---
 
-[![Build Status](https://travis-ci.org/hotoo/webforms.png)](https://travis-ci.org/hotoo/webforms)
-[![Coverage Status](https://coveralls.io/repos/hotoo/webforms/badge.png?branch=master)](https://coveralls.io/r/hotoo/webforms)
+[![spm package](http://spmjs.io/badge/webforms.validator)](http://spmjs.io/package/webforms.validator)
+[![Build Status](https://travis-ci.org/webforms/validator.png)](https://travis-ci.org/webforms/validator)
+[![Coverage Status](https://coveralls.io/repos/webforms/validator/badge.png?branch=master)](https://coveralls.io/r/webforms/validator)
 
 
 语义化 Web 表单，提供体系完整、灵活高效、高度一致的 Web 表单方案。

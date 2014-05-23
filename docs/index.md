@@ -3,6 +3,11 @@
 
 ----
 
+* http://www.w3.org/TR/html5/forms.html
+* http://dev.w3.org/html5/markup/input.html
+* https://wiki.mozilla.org/DOM:Web_Forms_2.0
+* http://miketaylr.com/pres/html5/forms2.html
+* http://webforms2.testsuite.org/
 
 ## 参考
 
