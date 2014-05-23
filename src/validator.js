@@ -457,7 +457,9 @@ define(function(require, exports, module){
     }
     //console.log("verified", certified)
 
-    context._EVT.trigger(certified ? "valid": "invalid", field);
+    if(context._async_validation === 0){
+      context._EVT.trigger(certified ? "valid": "invalid", field);
+    }
     return certified;
   }
 
@@ -753,6 +755,7 @@ define(function(require, exports, module){
       context._async_validation--;
       if(context._async_validation === 0){
         // XXX: state is not the last state.
+        // or donot call when validate invalid before.
         context._EVT.trigger("complete", state);
       }
     });
