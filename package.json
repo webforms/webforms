@@ -1,18 +1,19 @@
 {
-  "name": "webforms.validator",
-  "version": "0.1.0",
-  "description": "WebForms Validator.",
-  "homepage": "https://github.com/webforms/validator",
+  "name": "webforms",
+  "version": "0.2.0",
+  "description": "WebForms.",
+  "homepage": "https://github.com/webforms/webforms",
   "author": "闲耘<hotoo.cn[AT]gmail.com>",
-  "repository": "https://github.com/webforms/validator.git",
+  "repository": "https://github.com/webforms/webforms.git",
   "bugs": {
-    "url": "https://github.com/webforms/validator/issues"
+    "url": "https://github.com/webforms/webforms/issues"
   },
   "keywords": ["widget", "form", "forms", "webform", "webforms"],
   "spm": {
-    "main": "validator.js",
+    "main": "webforms.js",
     "dependencies": {
-      "arale-events": "1.2.0"
+      "events": "1.0.1",
+      "univ": "0.1.0"
     },
     "devDependencies": {
       "jquery": "1.7.2"
