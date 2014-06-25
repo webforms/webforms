@@ -39,10 +39,10 @@ describe('validator', function() {
   function testRequiredValid(webforms, data, done){
     webforms.on("invalid", function(field){
       //if(field == "text-minlength-2"){console.log("B")}
-      //console.log("C", field)
+      console.log("C", field)
       expect("invalid").to.equal("valid");
     }).on("valid", function(field){
-      expect(field.name).to.equal(data.name);
+      expect("valid").to.equal("valid");
     }).on("validation", function(certified){
       expect(certified).to.equal(true);
       done();

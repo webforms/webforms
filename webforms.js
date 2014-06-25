@@ -180,7 +180,7 @@ function getValues(form, submitter, test_mode){
       datas[name] = [];
     }
     datas[name].push(value);
-    if(name=="number-1"){
+    if(name=="number-4"){
       console.log("A", '"'+value+'"', datas, test_mode)
     }
   }
@@ -230,8 +230,8 @@ WebForms.prototype.validate = function(){
   var data = getValues(this._form, this._submitter || this._submitters[0], this._options.test);
   var me = this;
 
-  if(rule["number-1"]){
-    console.log(rule,data);
+  if(rule["number-4"]){
+    console.log("O",rule,data);
   }
 
   univ.on("invalid", function(name, value, validaty){
