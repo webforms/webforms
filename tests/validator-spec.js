@@ -535,9 +535,9 @@ describe('validator', function() {
       testRequiredValid,
       'date-1'
     ],
-    [ 'input[type=date][value=" "]:valid',
+    [ 'input[type=date][value=" "]:invalid',
       '<input type="date" name="date-2" value=" " />',
-      testRequiredValid,
+      testRequiredInvalid,
       'date-2'
     ],
     [ 'input[type=date][value="20130101"]:invalid',
