@@ -146,7 +146,7 @@ function getRule(form){
 }
 
 
-function getValues(form, submitter){
+function getValues(form, submitter, test_mode){
 
   var elements = form.elements;
   var datas = {};
@@ -155,7 +155,7 @@ function getValues(form, submitter){
     element = elements[i];
     var name = element.getAttribute("name");
     var type = getType(element);
-    var value = element.value;
+    var value = test_mode ? element.getAttribute("value") || element.value : element.value;
 
     if(!name){continue;}
     switch(type){
@@ -180,8 +180,8 @@ function getValues(form, submitter){
       datas[name] = [];
     }
     datas[name].push(value);
-    if(name=="text-minlength-2"){
-      console.log("A", datas)
+    if(name=="number-1"){
+      console.log("A", '"'+value+'"', datas, test_mode)
     }
   }
 
@@ -227,13 +227,17 @@ var WebForms = function(form, options){
 WebForms.prototype.validate = function(){
   var rule = getRule(this._form);
   var univ = new Univ(mergeCustom(rule, this._options.rule || {}, "custom"));
-  var data = getValues(this._form, this._submitter || this._submitters[0]);
+  var data = getValues(this._form, this._submitter || this._submitters[0], this._options.test);
   var me = this;
+
+  if(rule["number-1"]){
+    console.log(rule,data);
+  }
 
   univ.on("invalid", function(name, value, validaty){
 
-    if(name == "text-minlength-2")
-      console.log("D", name, value, rule, data, me._form.innerHTML)
+    //if(name == "text-minlength-2")
+      //console.log("D", name, value, rule, data, me._form.innerHTML)
     me._evt.emit("invalid", {
       name: name,
       value: value,
@@ -250,8 +254,8 @@ WebForms.prototype.validate = function(){
 
   }).on("complete", function(certified){
     //!DEBUG
-    if(rule["text-minlength-2"])
-      console.log("V", certified, rule, data, me._form.innerHTML)
+    //if(rule["text-minlength-2"])
+      //console.log("V", certified, rule, data, me._form.innerHTML)
 
     me._evt.emit("validation", certified);
 

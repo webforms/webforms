@@ -13,7 +13,7 @@
     "main": "webforms.js",
     "dependencies": {
       "events": "1.0.1",
-      "univ": "0.1.1"
+      "univ": "0.1.2"
     },
     "devDependencies": {
       "jquery": "1.7.2",

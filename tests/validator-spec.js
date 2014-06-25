@@ -1,4 +1,13 @@
 
+//HTMLElement.prototype.__defineGetter__("value", function(){
+  //return this.getAttribute("value");
+//});
+Object.defineProperty(HTMLInputElement.prototype, "value", {
+  get: function(){
+    return this.getAttribute("value");
+  }
+});
+
 var WebForms = require('webforms');
 var $ = require('jquery');
 var expect = require('expect.js');
@@ -29,8 +38,8 @@ describe('validator', function() {
 
   function testRequiredValid(webforms, data, done){
     webforms.on("invalid", function(field){
-      if(field == "text-minlength-2"){console.log("B")}
-      console.log("C", field)
+      //if(field == "text-minlength-2"){console.log("B")}
+      //console.log("C", field)
       expect("invalid").to.equal("valid");
     }).on("valid", function(field){
       expect(field.name).to.equal(data.name);
@@ -393,7 +402,7 @@ describe('validator', function() {
       'number-0'
     ],
     [ 'input[type=number][value=" "]:invalid',
-      '<input type="number" name="number-1" value=" " />',
+      '<input type="number" name="number-1" value="  a" />',
       testRequiredInvalid,
       'number-1'
     ],
@@ -959,7 +968,7 @@ describe('validator', function() {
       it(desc, function(done) {
 
         var form = makeForm(elements);
-        var webforms = new WebForms(form);
+        var webforms = new WebForms(form, {test: true});
 
         handler(webforms, {name: name}, done);
 
