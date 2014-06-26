@@ -24,7 +24,6 @@ function makeForm(html){
 describe('validator', function() {
 
   function testRequiredInvalid(webforms, data, done){
-    //console.log(webforms._form.innerHTML);
     webforms.on("invalid", function(field){
       expect("invalid").to.equal("invalid");
     }).on("valid", function(certified){
@@ -38,8 +37,6 @@ describe('validator', function() {
 
   function testRequiredValid(webforms, data, done){
     webforms.on("invalid", function(field){
-      //if(field == "text-minlength-2"){console.log("B")}
-      console.log("C", field)
       expect("invalid").to.equal("valid");
     }).on("valid", function(field){
       expect("valid").to.equal("valid");

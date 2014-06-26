@@ -192,7 +192,6 @@ function getValues(form, submitter, test_mode){
 }
 
 function mergeCustom(rules, customRules, customName){
-  console.log("R", rules, customRules, customName)
   for(var name in customRules){
     if(customRules.hasOwnProperty(name) && rules.hasOwnProperty(name)){
       rules[name][customName] = customRules[name];
@@ -234,14 +233,8 @@ WebForms.prototype.validate = function(){
   var data = getValues(this._form, this._submitter || this._submitters[0], this._options.test);
   var me = this;
 
-  if(rule["func-5"]){
-    console.log("O",rule,data);
-  }
-
   univ.on("invalid", function(name, value, validaty){
 
-    //if(name == "text-minlength-2")
-      //console.log("D", name, value, rule, data, me._form.innerHTML)
     me._evt.emit("invalid", {
       name: name,
       value: value,
@@ -257,9 +250,6 @@ WebForms.prototype.validate = function(){
     });
 
   }).on("complete", function(certified){
-    //!DEBUG
-    //if(rule["text-minlength-2"])
-      //console.log("V", certified, rule, data, me._form.innerHTML)
 
     me._evt.emit("validation", certified);
 
