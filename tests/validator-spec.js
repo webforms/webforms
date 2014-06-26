@@ -848,10 +848,8 @@ describe('validator', function() {
     [ 'input[value="abc"]!function-4:valid',
       '<input name="func-4" value="abc" />',
       {
-        "func-4": function(field){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-4");
-          expect(field.type).to.equal("text");
+        "func-4": function(value){
+          expect(value).to.equal("abc");
           return true;
         }
       },
@@ -861,10 +859,8 @@ describe('validator', function() {
     [ 'input[value="abc"]!function-5:invalid',
       '<input name="func-5" value="abc" />',
       {
-        "func-5": function(field){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-5");
-          expect(field.type).to.equal("text");
+        "func-5": function(value){
+          expect(value).to.equal("abc");
           return false;
         }
       },
@@ -874,10 +870,8 @@ describe('validator', function() {
     [ 'input[value="abc"]!function-6:valid',
       '<input name="func-6" value="abc" />',
       {
-        "func-6": function(field){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-6");
-          expect(field.type).to.equal("text");
+        "func-6": function(value){
+          expect(value).to.equal("abc");
           return true;
         }
       },
@@ -887,7 +881,7 @@ describe('validator', function() {
     [ 'input[id=id-func-7][value=""]!function-7:valid',
       '<input name="func-7" id="func-7" value="" />',
       {
-        "#func-7": function(field){
+        "func-7": function(field){
           expect("do not call this!").to.equal(true);
           return false;
         }
@@ -898,11 +892,8 @@ describe('validator', function() {
     [ 'input[id=id-func-8][value="abc"]!function-8:invalid',
       '<input name="func-8" id="id-func-8" value="abc" />',
       {
-        "#id-func-8": function(field){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-8");
-          expect(field.id).to.equal("id-func-8");
-          expect(field.type).to.equal("text");
+        "func-8": function(value){
+          expect(value).to.equal("abc");
           return false;
         }
       },
@@ -912,11 +903,8 @@ describe('validator', function() {
     [ 'input[id=id-func-9][value="abc"]!function-9:valid',
       '<input name="func-9" id="id-func-9" value="abc" />',
       {
-        "#id-func-9": function(field){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-9");
-          expect(field.id).to.equal("id-func-9");
-          expect(field.type).to.equal("text");
+        "func-9": function(value){
+          expect(value).to.equal("abc");
           return true;
         }
       },
@@ -928,10 +916,8 @@ describe('validator', function() {
     [ 'input[value="abc"]!function-async-0:valid',
       '<input name="func-async-0" verified value="abc" />',
       {
-        "func-async-0": function(field, callback){
-          expect(field.value).to.equal("abc");
-          expect(field.name).to.equal("func-async-0");
-          expect(field.type).to.equal("text");
+        "func-async-0": function(value, callback){
+          expect(value).to.equal("abc");
           $.ajax({
             url: "./good.json",
             dataType: "json",
@@ -996,9 +982,8 @@ describe('validator', function() {
 
         var form = makeForm(elements);
         var webforms = new WebForms(form, {
-          validation: {
-            rules: func
-          }
+          rule: func,
+          test: true
         });
 
         handler(webforms, {name: name}, done);
