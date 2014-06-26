@@ -55,42 +55,6 @@ function getType(elem){
   return type.toLowerCase();
 }
 
-// 获取表单项的值。
-// @param {HTMLInputElement} elem, 表单项。
-// @return {String} 返回表单项的值。
-function getValue(elem){
-  if(!elem || !elem.form){return null;}
-  var type = getType(elem);
-  var name = elem.getAttribute("name");
-  var form = elem.form;
-  var values = [];
-
-  switch(type){
-  case "radio":
-  case "checkbox":
-    if(!name){return null;}
-    for(var i=0,l=form[name].length; i<l; i++){
-      if(form[name][i].checked){
-        values.push(form[name][i].value);
-      }
-    }
-    return values;
-  case "select-multiple": // select[multiple]>option
-    for(var i=0,l=elem.length; i<l; i++){
-      if(elem[i].selected){
-        values.push(elem[i].value);
-      }
-    }
-    return values;
-  // `text`, `textarea`, `password`, `hidden`,
-  // `file`(only file name),
-  // `select-one` (select>option)
-  // `submit`, `reset`, `image`, `button`.
-  default:
-    return elem.value;
-  }
-}
-
 function getRule(form){
 
   var elements = form.elements;
@@ -148,6 +112,11 @@ function getRule(form){
 }
 
 
+// 获取表单项的值。
+// @param {HTMLFormElement} form, 表单项。
+// @param {HTMLInputElement} submitter。
+// @param {Boolean} test_mode
+// @return {Object}
 function getValues(form, submitter, test_mode){
 
   var elements = form.elements;
