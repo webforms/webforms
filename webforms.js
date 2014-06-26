@@ -6,13 +6,15 @@ var Event = require("events").EventEmitter;
 
 var RE_ID_SELECTOR = /^#/;
 
-function isString(object){
-  return Object.prototype.toString.call(object) === '[object String]';
+function typeOf(type){
+  return function(object){
+    return Object.prototype.toString.call(object) === '[object '+type+']';
+  }
 }
 
-function isFunction(object){
-  return Object.prototype.toString.call(object) === '[object Function]';
-}
+var isString = typeOf("String");
+var isArray = typeOf("Array");
+var isFunction = typeOf("Function");
 
 function eachField(form, handler){
   if(!form || !form.elements || !isFunction(handler)){return;}
@@ -177,11 +179,12 @@ function getValues(form, submitter, test_mode){
     }
 
     if(!datas.hasOwnProperty(name)){
-      datas[name] = [];
-    }
-    datas[name].push(value);
-    if(name=="number-4"){
-      console.log("A", '"'+value+'"', datas, test_mode)
+      datas[name] = value;
+    }else{
+      if(!isArray(datas[name])){
+        datas[name] = [ datas[name] ];
+      }
+      datas[name].push(value);
     }
   }
 
@@ -189,6 +192,7 @@ function getValues(form, submitter, test_mode){
 }
 
 function mergeCustom(rules, customRules, customName){
+  console.log("R", rules, customRules, customName)
   for(var name in customRules){
     if(customRules.hasOwnProperty(name) && rules.hasOwnProperty(name)){
       rules[name][customName] = customRules[name];
@@ -230,7 +234,7 @@ WebForms.prototype.validate = function(){
   var data = getValues(this._form, this._submitter || this._submitters[0], this._options.test);
   var me = this;
 
-  if(rule["number-4"]){
+  if(rule["func-5"]){
     console.log("O",rule,data);
   }
 
