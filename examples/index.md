@@ -42,19 +42,17 @@
 ----
 
 ````js
-seajs.use(['$', 'webforms', 'validator-feedback-bootstrap'],
+seajs.use(['jquery', 'webforms', 'validator-feedback-bootstrap'],
   function($, WebForms, Feedback){
 
     var loginForm = new WebForms("#form-login", {
-        validation: {
-            rules: {
-                "username": function(field){
-                    return this.RULE.email.test(field.value) ||
-                        this.RULE.mobile.test(field.value);
-                }
-            },
-            feedback: Feedback
+      rule: {
+        "username": function(field){
+          return this.RULE.email.test(field.value) ||
+            this.RULE.mobile.test(field.value);
         }
+      },
     });
+    Feedback(loginForm);
 });
 ````

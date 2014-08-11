@@ -3,6 +3,7 @@
 
 var Univ = require("univ");
 var Event = require("events").EventEmitter;
+var $ = require("jquery");
 
 var RE_ID_SELECTOR = /^#/;
 
@@ -194,6 +195,13 @@ var WebForms = function(form, options){
       });
     }
   });
+
+  $form = $(form);
+  $form.attr("novalidate", "novalidate");
+  $(form).submit(function(){
+    me.submit();
+    return false;
+  });
 };
 
 WebForms.prototype.validate = function(){
@@ -230,7 +238,7 @@ WebForms.prototype.validate = function(){
 
 WebForms.prototype.submit = function(){
   var me = this;
-  this._evt.once("validation", function(certified){
+  this._evt.once("complete", function(certified){
     if(certified){
       me.emit("submit", me._form);
       me.submit();
