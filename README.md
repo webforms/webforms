@@ -3,8 +3,8 @@
 
 ---
 
-[![Build Status](https://travis-ci.org/hotoo/webforms.png)](https://travis-ci.org/hotoo/webforms)
-[![Coverage Status](https://coveralls.io/repos/hotoo/webforms/badge.png?branch=master)](https://coveralls.io/r/hotoo/webforms)
+[![Build Status](https://travis-ci.org/webforms/webforms.png)](https://travis-ci.org/webforms/webforms)
+[![Coverage Status](https://coveralls.io/repos/webforms/webforms/badge.png?branch=master)](https://coveralls.io/r/webforms/webforms)
 
 
 语义化 Web 表单，提供体系完整、灵活高效、高度一致的 Web 表单方案。
