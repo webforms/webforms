@@ -48,8 +48,9 @@ seajs.use(['jquery', 'webforms', 'validator-feedback-bootstrap'],
     var loginForm = new WebForms("#form-login", {
       rule: {
         "username": function(field){
-          return this.RULE.email.test(field.value) ||
-            this.RULE.mobile.test(field.value);
+          var value = field.value;
+          return this.isEmail(value) ||
+                 this.isMobile(value);
         }
       },
     });
