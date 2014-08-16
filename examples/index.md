@@ -47,13 +47,12 @@ seajs.use(['jquery', 'webforms', 'validator-feedback-bootstrap'],
 
     var loginForm = new WebForms("#form-login", {
       rule: {
-        "username": function(field){
-          var value = field.value;
+        "username": function(value){
           return this.isEmail(value) ||
                  this.isMobile(value);
         }
       },
+      feedback: Feedback
     });
-    Feedback(loginForm);
 });
 ````

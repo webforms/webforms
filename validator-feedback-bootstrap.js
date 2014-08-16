@@ -3,8 +3,8 @@ var $ = require("jquery");
 
 var VALIDATION_MESSAGE = "validationMessage";
 
-module.exports = function(webforms){
-  webforms.on("invalid", function(field){
+module.exports = function(){
+  this.on("invalid", function(field){
     var elem = $("[name=" + field.name + "]");
     var parent = elem.parent(".controls").parent(".control-group");
     var message = elem.siblings(".help-inline:first");

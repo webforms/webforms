@@ -56,51 +56,59 @@ function getType(elem){
   return type.toLowerCase();
 }
 
-function getRule(form){
+function getRule(element) {
+  var type = getType(element);
+  var name = element.getAttribute("name");
+  var required = element.hasAttribute("required");
+  var multiple = element.hasAttribute("multiple");
+  var min = element.getAttribute("min");
+  var max = element.getAttribute("max");
+  var minlength = element.getAttribute("minlength");
+  var maxlength = element.getAttribute("maxlength");
+  var pattern = element.getAttribute("pattern");
+  var accept = element.getAttribute("accept");
+  var step = element.getAttribute("step");
+  var disabled = element.disabled;
+  var readonly = element.readOnly;
+
+  if(!name){return;}
+  if(disabled || readonly){return;}
+
+  switch(type){
+  case 'submit':
+  case 'button':
+  case 'reset':
+  case 'image':
+  case 'hidden':
+    return;
+  }
+
+  return {
+    type: type,
+    required: required,
+    multiple: multiple,
+    min: min,
+    max: max,
+    minlength: minlength,
+    maxlength: maxlength,
+    pattern: pattern,
+    accept: accept,
+    step: step
+  };
+}
+
+function getRules(form){
 
   var elements = form.elements;
   var rules = {};
 
   for(var i=0, element, l=elements.length; i<l; i++){
     element = elements[i];
-    var type = getType(element);
     var name = element.getAttribute("name");
-    var required = element.hasAttribute("required");
-    var multiple = element.hasAttribute("multiple");
-    var min = element.getAttribute("min");
-    var max = element.getAttribute("max");
-    var minlength = element.getAttribute("minlength");
-    var maxlength = element.getAttribute("maxlength");
-    var pattern = element.getAttribute("pattern");
-    var accept = element.getAttribute("accept");
-    var step = element.getAttribute("step");
-    var disabled = element.disabled;
-    var readonly = element.readonly;
 
-    if(!name){continue;}
-    if(disabled || readonly){continue;}
+    var rule = getRule(element);
 
-    switch(type){
-    case 'submit':
-    case 'button':
-    case 'reset':
-    case 'image':
-    case 'hidden':
-      continue;
-    }
-
-    var rule = {
-      type: type,
-      required: required,
-      multiple: multiple,
-      min: min,
-      max: max,
-      minlength: minlength,
-      maxlength: maxlength,
-      pattern: pattern,
-      accept: accept,
-      step: step
-    };
+    if (!rule) {continue;}
 
     if(!rules.hasOwnProperty(name)){
       rules[name] = rule
@@ -172,43 +180,87 @@ function mergeCustom(rules, customRules, customName){
 
 
 var WebForms = function(form, options){
-  if(isString(form)){
-    form = document.getElementById(form.replace(RE_ID_SELECTOR, ""));
-  }else if(form.jquery){
-    form = form[0];
-  }else if(!form.elements){
-    throw new Error("form "+form+" is not support.");
-  }
-  this._form = form;
-  this._options = options || {};
-  this._evt = new Event();
-  this._submitter = null;
-  this._submitters = [];
-
   var me = this;
-  eachField(form, function(field){
+  form = me._form = $(form);
+  me._options = options || {};
+  me._evt = new Event();
+  me._submitter = null;
+  me._submitters = [];
+
+  eachField(form[0], function(field){
     var type = getType(field);
-    if(type === "submit" || type === "image"){
+    var $field = $(field);
+
+    switch(type){
+    case "hidden":
+    case "button":
+    case "reset":
+      break;
+    case "submit":
+    case "image":
       me._submitters.push(field);
-      field.addEventListener("click", function(){
+      $field.on("mousedown", function(){
         me._submitter = this;
       });
+      break;
+    default:
+      $field.on("blur keyup", function(){
+        me.validateField(this);
+      });
     }
+
   });
 
-  $form = $(form);
-  $form.attr("novalidate", "novalidate");
-  $(form).submit(function(){
+  try {
+    form.attr("novalidate", "novalidate");
+  } catch (ex) { }
+
+  form.submit(function(){
     me.submit();
     return false;
   });
+
+  var feedback = me._options.feedback;
+  if (feedback) {
+    feedback.call(me);
+  }
+
+};
+
+WebForms.prototype.validateField = function(field){
+  var me = this;
+  var name = field.getAttribute("name");
+  var rule = {}; rule[name] = getRule(field);
+  var value = field.value;
+  var univ = new Univ(mergeCustom(rule, me._options.rule || {}, "custom"));
+  var data = {}; data[name] = value;
+
+  univ.on("invalid", function(name, value, validaty){
+
+    me._evt.emit("invalid", {
+      name: name,
+      value: value,
+      validaty: validaty
+    });
+
+  }).on("valid", function(name, value, validaty){
+
+    me._evt.emit("valid", {
+      name: name,
+      value: value,
+      validaty: validaty
+    });
+
+  }).validate(data);
+
 };
 
 WebForms.prototype.validate = function(){
-  var rule = getRule(this._form);
-  var univ = new Univ(mergeCustom(rule, this._options.rule || {}, "custom"));
-  var data = getValues(this._form, this._submitter || this._submitters[0], this._options.test);
   var me = this;
+  var form = me._form[0];
+  var rule = getRules(form);
+  var univ = new Univ(mergeCustom(rule, me._options.rule || {}, "custom"));
+  var data = getValues(form, me._submitter || me._submitters[0], me._options.test);
 
   univ.on("invalid", function(name, value, validaty){
 
@@ -232,19 +284,24 @@ WebForms.prototype.validate = function(){
 
   }).validate(data);
 
-  this._submitter = null;
+  me._submitter = null;
 
 };
 
 WebForms.prototype.submit = function(){
   var me = this;
-  this._evt.once("complete", function(certified){
+  me._evt.once("complete", function(certified){
     if(certified){
       me.emit("submit", me._form);
       me.submit();
     }
   });
-  this.validate();
+  me.validate();
+};
+
+WebForms.prototype.feedback = function(feedback){
+  feedback.call(this);
+  return this;
 };
 
 WebForms.prototype.on = function(eventName, handler){
