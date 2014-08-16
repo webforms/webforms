@@ -2,6 +2,8 @@
 
 ----
 
+
+````html
 <link rel="stylesheet" type="text/css" href="bootstrap.css" media="all" />
 
 
@@ -38,11 +40,11 @@
     </div>
   </div>
 </form>
+````
 
-----
 
 ````js
-seajs.use(['jquery', 'webforms', 'validator-feedback-bootstrap'],
+seajs.use(['jquery', 'webforms', './feedback-bootstrap'],
   function($, WebForms, Feedback){
 
     var loginForm = new WebForms("#form-login", {
