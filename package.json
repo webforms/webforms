@@ -12,11 +12,11 @@
   "spm": {
     "main": "webforms.js",
     "dependencies": {
+      "jquery": "1.7.2",
       "events": "1.0.1",
       "univ": "0.1.5"
     },
     "devDependencies": {
-      "jquery": "1.7.2",
       "expect.js": "0.3.1"
     }
   },
