@@ -204,8 +204,25 @@ var WebForms = function(form, options){
       });
       break;
     default:
-      $field.on("blur keyup", function(){
-        me.validateField(this);
+      var old_value;
+      $field.on("blur", function(evt){
+        me.validateField(this, false);
+        me._evt.emit("blur", evt, $field);
+        return me;
+      }).on("focus", function(evt){
+        me._evt.emit("focus", evt, $field);
+        return me;
+      }).on("keydown", function(evt){
+        old_value = this.value;
+        me._evt.emit("keydown", evt, $field);
+        return me;
+      }).on("keyup", function(evt){
+        var new_value = this.value;
+        if (evt.keyCode !== 13 && old_value === new_value){
+          me.validateField(this, true);
+        }
+        me._evt.emit("keyup", evt, $field);
+        return me;
       });
     }
 
@@ -227,10 +244,14 @@ var WebForms = function(form, options){
 
 };
 
-WebForms.prototype.validateField = function(field){
+WebForms.prototype.validateField = function(field, inputing){
   var me = this;
   var name = field.getAttribute("name");
-  var rule = {}; rule[name] = getRule(field);
+  var field_rule = getRule(field);
+  if (!name || !field_rule) { return; }
+
+  var rule = {};
+  rule[name] = field_rule;
   var value = field.value;
   var univ = new Univ(mergeCustom(rule, me._options.rule || {}, "custom"));
   var data = {}; data[name] = value;
@@ -241,7 +262,7 @@ WebForms.prototype.validateField = function(field){
       name: name,
       value: value,
       validaty: validaty
-    });
+    }, inputing);
 
   }).on("valid", function(name, value, validaty){
 
@@ -249,7 +270,7 @@ WebForms.prototype.validateField = function(field){
       name: name,
       value: value,
       validaty: validaty
-    });
+    }, inputing);
 
   }).validate(data);
 
