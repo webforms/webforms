@@ -21,18 +21,6 @@
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="inputEmail">Account ID</label>
-    <div class="controls">
-      <textarea type="text" name="usernames" id="inputEmail"
-        placeholder="Email or Mobile Phone Number."
-        autofocus
-        required
-        validationMessage="账号是一个合法的手机号或者电子邮箱地址。"
-        ></textarea>
-      <span class="help-inline"><strong>*</strong> 必填，请输入您的账号。</span>
-    </div>
-  </div>
-  <div class="control-group">
     <label class="control-label" for="inputPassword">Password</label>
     <div class="controls">
       <input type="password" name="password" id="inputPassword"
@@ -58,6 +46,7 @@
 ````js
 seajs.use(['jquery', 'webforms', './feedback-bootstrap'],
   function($, WebForms, Feedback){
+
 
     var loginForm = new WebForms("#form-login", {
       rule: {
